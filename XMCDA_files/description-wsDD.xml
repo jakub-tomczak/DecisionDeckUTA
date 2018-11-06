@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='utf-8'?>
+<program_description>
+    <program provider="PUT"
+     name="UTA"
+     displayName="UTA"
+     version="1.0" />
+    <documentation>
+        <description>This module contains UTA solvers (UTA-G, UTAMP-1, UTAMP-2)</description>
+        <contact>Jakub Tomczak (jakub.tomczak@live.com)</contact>
+        <url></url>
+        <reference></reference>
+    </documentation>
+    <parameters>
+		<input id="criteria" name="criteria" displayName="Description of criteria">
+			<documentation>
+				<description>A list of criteria.</description>
+			</documentation>
+			<xmcda tag="criteria">
+                <![CDATA[	
+                    <criteria>
+                        <criterion>
+                            <direction>[...]</direction>
+                            <numberOfCharacterisitcPoints>[...]</numberOfCharacterisitcPoints>
+                        </criterion>
+                    </criteria>			
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="alternatives" name="alternatives" displayName="Alternative list">
+			<documentation>
+				<description>A list of alternatives. </description>
+			</documentation>
+			<xmcda tag="alternatives">
+                <![CDATA[	
+                    <alternatives>
+                        <alternative>
+                            <alternativeID>[...]</alternativeID>
+                        </alternative>
+                    </alternatives>			
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="performanceTable" name="performanceTable" displayName="performanceTable">
+			<documentation>
+				<description>Values of criteria for different alternatives. Values of alternatives should be non-negative real numbers.</description>
+			</documentation>
+			<xmcda tag="performanceTable">
+                <![CDATA[
+                    <performanceTable>
+                        <alternativePerformances>
+                            <alternativeID>[...]</alternativeID>
+                            <performance>
+                                <criterionID>[...]</criterionID>
+                                <value>
+                                        <real>[...]</real>
+                                </value>
+                            </performance>
+                        </alternativePerformances>
+                    </performanceTable>       
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="strongPreferences" name="strongPreferences" displayName="strongPreferences" isoptional="1">
+			<documentation>
+				<description>Pariwise strong preferences relations between alternatives. Alternatives are referred by their IDs.</description>
+			</documentation>
+			<xmcda tag="strongPreferences">
+                <![CDATA[
+                    <strongPreferences>
+                        <strongPreference>
+                            <preferredAlternativeID>[...]</preferredAlternativeID>
+                            <referenceAlternativeID>[...]</referenceAlternativeID>
+                        </strongPreference>
+                    </strongPreferences>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="weakPreferences" name="weakPreferences" displayName="weakPreferences" isoptional="1">
+			<documentation>
+				<description>Pariwise weak preferences relations between alternatives. Alternatives are referred by their IDs.</description>
+			</documentation>
+			<xmcda tag="weakPreferences">
+                <![CDATA[
+                    <weakPreferences>
+                        <weakPreference>
+                            <preferredAlternativeID>[...]</preferredAlternativeID>
+                            <referenceAlternativeID>[...]</referenceAlternativeID>
+                        </weakPreference>
+                    </weakPreferences>
+                ]]>
+            </xmcda>
+		</input>
+
+        <input id="indifferences" name="indifferences" displayName="indifferences" isoptional="1">
+			<documentation>
+				<description>Pariwise indifference relations between alternatives. Alternatives are referred by their IDs.</description>
+			</documentation>
+			<xmcda tag="indifferences">
+                <![CDATA[
+                    <indifferences>
+                        <indifference>
+                            <firstAlternativeID>[...]</firstAlternativeID>
+                            <secondAlternativeID>[...]</secondAlternativeID>
+                        </indifference>
+                    </indifferences>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="method" name="method" displayName="method" isoptional="1">
+			<documentation>
+				<description>Which method should be used as a solver, available options { 1 : "UTA-G", 2 : "UTAMP-1", 3 : "UTAMP-2"}.</description>
+			</documentation>
+			<xmcda tag="method">
+                <![CDATA[
+                    <method>
+                    <parameter id="method" name="Number of the method that should be used in calculations.">
+                            <value>
+                                <integer>%1</integer>
+                            </value>
+                        </parameter>
+                    </method>			
+                ]]>
+            </xmcda>
+			<gui status="preferGUI">
+				<entry id="%1" type="enum" displayName="Number of method to be used as a solver.">
+					<documentation>
+						<description>Number of the method to be used as a solver.</description>
+					</documentation>
+					<items>
+						<item id="utag">
+							<description>UTA-G</description>
+							<value>1</value>
+						</item>
+						<item id="utamp1">
+							<description>UTAMP-2</description>
+							<value>2</value>
+						</item>
+                        <item id="utamp1">
+							<description>UTAMP-1</description>
+							<value>3</value>
+						</item>
+					</items>
+					<defaultValue>1</defaultValue>
+				</entry>
+			</gui>
+		</input>
+
+		<output id="valueFunctions" name="valueFunctions" displayName="valueFunctions">
+			<documentation>
+				<description>Constructed value functions for the selected criteria.</description>
+			</documentation>
+			<xmcda tag="criteria">
+                <![CDATA[                 
+                    <criteria mcdaConcept="criteria">
+                        <criterion>
+                            <criterionID>[...]</criterionID>
+                            <criterionFunction>
+                                <points>
+                                    <point>
+                                        <x><real>[...]</real></x>
+                                        <y><real>[...]</real></y>
+                                    </point>
+                                </points>
+                            </criterionFunction>
+                        </criterion>
+                    </criteria>
+                ]]>
+            </xmcda>
+		</output>
+
+		<output id="messages" name="messages" displayName="messages">
+			<documentation>
+				<description>A list of messages generated by the algorithm.</description>
+			</documentation>
+			<xmcda tag="methodMessages" />
+		</output>
+    </parameters>
+</program_description>
