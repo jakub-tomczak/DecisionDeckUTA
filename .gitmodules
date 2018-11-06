@@ -1,0 +1,3 @@
+[submodule "Rpackage"]
+	path = Rpackage
+	url = ./Rpackage
