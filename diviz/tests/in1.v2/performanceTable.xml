@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+<performanceTable>
+	<alternativePerformances>
+		<alternativeID>a1</alternativeID>
+		<performance>
+			<criterionID>g1</criterionID>
+			<value>
+				<real>5</real>
+			</value>
+		</performance>
+		<performance>
+			<criterionID>g2</criterionID>
+			<value>
+				<real>.5</real>
+			</value>
+		</performance>
+	</alternativePerformances>
+	
+	<alternativePerformances>
+		<alternativeID>a2</alternativeID>
+		<performance>
+			<criterionID>g1</criterionID>
+				<value>
+					<real>2</real>
+				</value>
+		</performance>
+		<performance>
+			<criterionID>g2</criterionID>
+				<value>
+					<real>1.2</real>
+				</value>
+		</performance>
+	</alternativePerformances>
+	
+	<alternativePerformances>
+		<alternativeID>a3</alternativeID>
+		<performance>
+			<criterionID>g1</criterionID>
+			<value>
+				<real>3</real>
+			</value>
+		</performance>
+		<performance>
+			<criterionID>g2</criterionID>
+				<value>
+					<real>.5</real>
+				</value>
+		</performance>
+	</alternativePerformances>
+	
+	<alternativePerformances>
+		<alternativeID>a4</alternativeID>
+		<performance>
+			<criterionID>g1</criterionID>
+			<value>
+				<real>7</real>
+			</value>
+		</performance>
+		<performance>
+			<criterionID>g2</criterionID>
+				<value>
+					<real>.4</real>
+				</value>
+		</performance>
+	</alternativePerformances>
+</performanceTable>
+</xmcda:XMCDA>
