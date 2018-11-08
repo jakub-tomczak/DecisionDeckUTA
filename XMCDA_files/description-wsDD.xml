@@ -18,11 +18,33 @@
 			<xmcda tag="criteria">
                 <![CDATA[	
                     <criteria>
-                        <criterion>
-                            <direction>[...]</direction>
-                            <numberOfCharacterisitcPoints>[...]</numberOfCharacterisitcPoints>
+                        <criterion id="[...]" name="[...]">
+                            <scale>
+                                <quantitative>
+                                    <preferenceDirection>[...]</preferenceDirection>
+                                </quantitative>
+                            </scale>
                         </criterion>
-                    </criteria>			
+                    </criteria>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="characteristicPoints" name="characteristicPoints" displayName="Characteristic points">
+			<documentation>
+				<description>Number of characteristic points in the criteria.</description>
+			</documentation>
+			<xmcda tag="characteristicPoints">
+                <![CDATA[	
+                    <criteriaValues>
+                        <criterionValue>
+                            <criterionID>[...]</criterionID>
+                            <value>
+                                <integer>[...]</integer>
+                            </value>
+                        </criterionValue>
+                        [...]
+                    </criteriaValues>
                 ]]>
             </xmcda>
 		</input>
@@ -34,10 +56,8 @@
 			<xmcda tag="alternatives">
                 <![CDATA[	
                     <alternatives>
-                        <alternative>
-                            <alternativeID>[...]</alternativeID>
-                        </alternative>
-                    </alternatives>			
+                        <alternative id="[...]" name="[...]"/>
+                    </alternatives>
                 ]]>
             </xmcda>
 		</input>
@@ -69,12 +89,20 @@
 			</documentation>
 			<xmcda tag="strongPreferences">
                 <![CDATA[
-                    <strongPreferences>
-                        <strongPreference>
-                            <preferredAlternativeID>[...]</preferredAlternativeID>
-                            <referenceAlternativeID>[...]</referenceAlternativeID>
-                        </strongPreference>
-                    </strongPreferences>
+                    <alternativesComparisons>
+                        <comparisonType>[...]</comparsionType>
+                        <pairs>
+                            <pair>
+                                <initial>
+                                    <alternativeID>[...]</alternativeID>
+                                </initial>
+                                <terminal>
+                                    <alternativeID>[...]</alternativeID>
+                                </terminal>
+                            </pair>
+                            [...]
+                        </pairs>
+                    </alternativesComparisons>
                 ]]>
             </xmcda>
 		</input>
@@ -85,12 +113,20 @@
 			</documentation>
 			<xmcda tag="weakPreferences">
                 <![CDATA[
-                    <weakPreferences>
-                        <weakPreference>
-                            <preferredAlternativeID>[...]</preferredAlternativeID>
-                            <referenceAlternativeID>[...]</referenceAlternativeID>
-                        </weakPreference>
-                    </weakPreferences>
+                    <alternativesComparisons>
+                        <comparisonType>[...]</comparsionType>
+                        <pairs>
+                            <pair>
+                                <initial>
+                                    <alternativeID>[...]</alternativeID>
+                                </initial>
+                                <terminal>
+                                    <alternativeID>[...]</alternativeID>
+                                </terminal>
+                            </pair>
+                            [...]
+                        </pairs>
+                    </alternativesComparisons>
                 ]]>
             </xmcda>
 		</input>
@@ -101,29 +137,37 @@
 			</documentation>
 			<xmcda tag="indifferences">
                 <![CDATA[
-                    <indifferences>
-                        <indifference>
-                            <firstAlternativeID>[...]</firstAlternativeID>
-                            <secondAlternativeID>[...]</secondAlternativeID>
-                        </indifference>
-                    </indifferences>
+                    <alternativesComparisons>
+                        <comparisonType>[...]</comparsionType>
+                        <pairs>
+                            <pair>
+                                <initial>
+                                    <alternativeID>[...]</alternativeID>
+                                </initial>
+                                <terminal>
+                                    <alternativeID>[...]</alternativeID>
+                                </terminal>
+                            </pair>
+                            [...]
+                        </pairs>
+                    </alternativesComparisons>
                 ]]>
             </xmcda>
 		</input>
 
-		<input id="method" name="method" displayName="method" isoptional="1">
+		<input id="methodParameters" name="parameters" displayName="method" isoptional="1">
 			<documentation>
 				<description>Which method should be used as a solver, available options { 1 : "UTA-G", 2 : "UTAMP-1", 3 : "UTAMP-2"}.</description>
 			</documentation>
-			<xmcda tag="method">
+			<xmcda tag="methodParameters">
                 <![CDATA[
-                    <method>
-                    <parameter id="method" name="Number of the method that should be used in calculations.">
+                    <methodParameters>
+                        <parameter id="methodName" name="Number of the method that should be used in calculations.">
                             <value>
                                 <integer>%1</integer>
                             </value>
                         </parameter>
-                    </method>			
+                    </methodParameters>
                 ]]>
             </xmcda>
 			<gui status="preferGUI">
@@ -150,7 +194,7 @@
 			</gui>
 		</input>
 
-		<output id="valueFunctions" name="valueFunctions" displayName="valueFunctions">
+		<output id="valueFunctions" name="valueFunctions" displayName="valueFunctions" isoptional="1">
 			<documentation>
 				<description>Constructed value functions for the selected criteria.</description>
 			</documentation>
@@ -172,6 +216,30 @@
                 ]]>
             </xmcda>
 		</output>
+
+        <output id="ranking" name="ranking" displayName="Final ranking">
+            <documentation>
+                <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
+            </documentation>
+            <xmcda tag="alternativesValues">
+                <![CDATA[
+                    <alternativesValues>
+						<alternativeValue>
+							<alternativeID>[...]</alternativeID>
+                            <values>
+                                <value id="utilityValue">
+                                    <real>[...]</real>
+                                </value>
+                                <value id="positionInRanking">
+                                    <integer>[..]</integer>
+                                </value>
+                            </values>
+						 </alternativeValue>
+                        [...]
+                    </alternativesValues>
+                ]]>
+            </xmcda>
+        </output>
 
 		<output id="messages" name="messages" displayName="messages">
 			<documentation>
