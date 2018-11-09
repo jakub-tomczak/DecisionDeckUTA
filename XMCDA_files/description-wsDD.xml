@@ -30,7 +30,7 @@
             </xmcda>
 		</input>
 
-		<input id="characteristicPoints" name="characteristicPoints" displayName="Characteristic points">
+		<input id="characteristicPoints" name="characteristicPoints" displayName="Characteristic points" isoptional="1">
 			<documentation>
 				<description>Number of characteristic points in the criteria.</description>
 			</documentation>
