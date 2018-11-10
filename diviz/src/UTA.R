@@ -1,5 +1,6 @@
 UTA <- function(inputs)
 {
-  # calculation goes here
-  return(...)
+  library(Rglpk)
+  model <- buildModel(inputs)
+  solve(model, allowInconsistency = TRUE)
 }

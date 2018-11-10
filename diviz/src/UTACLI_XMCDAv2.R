@@ -52,7 +52,6 @@ alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
 alternativesComparisonsFile <- "alternativesComparisons.xml"
 methodParametersFile <- "methodParameters.xml"
-valueFunctionsFile <- "valueFunctions.xml"
 rankingFile <- "ranking.xml"
 messagesFile <- "messages.xml"
 

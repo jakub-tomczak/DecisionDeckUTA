@@ -153,29 +153,6 @@
 			</gui>
 		</input>
 
-		<output id="valueFunctions" name="valueFunctions" displayName="valueFunctions" isoptional="1">
-			<documentation>
-				<description>Constructed value functions for the selected criteria.</description>
-			</documentation>
-			<xmcda tag="criteria">
-                <![CDATA[                 
-                    <criteria mcdaConcept="criteria">
-                        <criterion>
-                            <criterionID>[...]</criterionID>
-                            <criterionFunction>
-                                <points>
-                                    <point>
-                                        <x><real>[...]</real></x>
-                                        <y><real>[...]</real></y>
-                                    </point>
-                                </points>
-                            </criterionFunction>
-                        </criterion>
-                    </criteria>
-                ]]>
-            </xmcda>
-		</output>
-
         <output id="ranking" name="ranking" displayName="Final ranking">
             <documentation>
                 <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
