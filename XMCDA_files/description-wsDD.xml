@@ -116,36 +116,36 @@
 
 		<input id="methodParameters" name="methodParameters" displayName="method" isoptional="1">
 			<documentation>
-				<description>Which method should be used as a solver, available options { 1 : "UTA-G", 2 : "UTAMP-1", 3 : "UTAMP-2"}.</description>
+				<description>Which method should be used as a solver, available options { "uta-g", "utamp-1", "utamp-2"}.</description>
 			</documentation>
 			<xmcda tag="methodParameters">
                 <![CDATA[
                     <methodParameters>
-                        <parameter id="methodName" name="Number of the method that should be used in calculations.">
+                        <parameter id="methodName" name="Name of the method that should be used in calculations.">
                             <value>
-                                <integer>%1</integer>
+                                <label>%1</label>
                             </value>
                         </parameter>
                     </methodParameters>
                 ]]>
             </xmcda>
 			<gui status="preferGUI">
-				<entry id="%1" type="enum" displayName="Number of method to be used as a solver.">
+				<entry id="%1" type="enum" displayName="Name of method to be used as a solver.">
 					<documentation>
-						<description>Number of the method to be used as a solver.</description>
+						<description>Name of the method to be used as a solver.</description>
 					</documentation>
 					<items>
 						<item id="utag">
 							<description>UTA-G</description>
-							<value>1</value>
+							<value>uta-g</value>
 						</item>
 						<item id="utamp1">
 							<description>UTAMP-2</description>
-							<value>2</value>
+							<value>utamp-1</value>
 						</item>
                         <item id="utamp1">
 							<description>UTAMP-1</description>
-							<value>3</value>
+							<value>utamp-2</value>
 						</item>
 					</items>
 					<defaultValue>1</defaultValue>

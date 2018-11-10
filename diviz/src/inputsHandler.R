@@ -112,8 +112,13 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   #parse preferences
   preferencesList <-getPreferences(xmcdaData, alternatives, programExecutionResult)
 
+  #get program parameters
+  programParameters <- getProgramParametersList(xmcdaData)
+  
   #parse methodParameters.xml
-  method <- "utag"
+  method <- ifelse(is.null(programParameters$programParameters$methodSettings$methodName), 
+                   "uta-g",
+                   programParameters$methodSettings$methodName)
 
   #validate data and build problem
   problem <- buildProblem(performanceTable = performanceMatrix,
@@ -121,6 +126,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
                           characteristicPoints = characteristicPoints, 
                           strongPreference = preferencesList$strong,
                           weakPreferences = preferencesList$weak,
-                          indifference = preferencesList$indifference)
+                          indifference = preferencesList$indifference,
+                          method = method)
   return(problem)
 }

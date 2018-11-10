@@ -2,11 +2,11 @@
 
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
-    <methodParameters>
+    <methodParameters id="methodSettings">
         <parameter  id="methodName" name="Name of the method">
             <value>
-                <integer>1</integer>
+                <label>uta-g</label>
             </value>
-        </parameter>  
+        </parameter>
     </methodParameters>
 </xmcda:XMCDA>

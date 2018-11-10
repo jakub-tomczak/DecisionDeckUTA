@@ -106,7 +106,8 @@ buildModel <- function(problem, minEpsilon = 1e-4, method="utamp-1") { # include
     preferencesToModelVariables = coefficientsMatrix,
     criterionPreferenceDirection = problem$criteria,
     generalVF = problem$generalVF,
-    minEpsilon = minEpsilon
+    minEpsilon = minEpsilon,
+    methodName = problem$methodName
   )
 
   # preference information
@@ -330,10 +331,10 @@ ua <- function(alternative, preferencesToModelVariables) {
 
 #' @export
 buildProblem <- function(performanceTable, criteria, characteristicPoints, strongPreferences = NULL,
-                         weakPreferences = NULL , indifference = NULL)
+                         weakPreferences = NULL , indifference = NULL, method = NULL)
 {
   problem <- validateModel(performanceTable, criteria, strongPreferences,
-                           weakPreferences, characteristicPoints, indifference)
+                           weakPreferences, characteristicPoints, indifference, method)
 
   nrAlternatives <- nrow(problem$performance)
   #contains TRUE on indices corresponding to the criteria that has no characteristicPoints
@@ -355,7 +356,7 @@ buildProblem <- function(performanceTable, criteria, characteristicPoints, stron
 }
 
 validateModel <- function(performanceTable, criteria, strongPreferences,
-                          weakPreferences, characteristicPoints, indifference)
+                          weakPreferences, characteristicPoints, indifference, method)
 {
   assert(is.matrix(performanceTable), "PerformanceTable must be a matrix.")
 
@@ -373,6 +374,12 @@ validateModel <- function(performanceTable, criteria, strongPreferences,
 
   assert(is.matrix(indifference), "Indifference must be a matrix")
 
+  #validate method name
+  if(!is.null(method))
+  {
+    assert(method %in% c('uta-g', 'utamp-1', 'utamp-2'), "Method must be one of the following: 'uta-g', 'utamp-1', 'utamp-2'")
+  }
+
   return (list(
     performanceTable = performanceTable,
     criteria = criteria,
@@ -380,7 +387,8 @@ validateModel <- function(performanceTable, criteria, strongPreferences,
     strongPreferences = strongPreferences,
     weakPreferences = weakPreferences,
     indifference = indifference,
-    strictVF = TRUE
+    strictVF = TRUE,
+    methodName = method
   ))
 }
 
@@ -403,6 +411,27 @@ validatePreferenceRelation <- function(preferenceRelation, numberOfPreferences)
 
 #********************solver.R********************
 
+#Solver method used when model$methodName is set
+#' @export
+solve <- function(model, allowInconsistency = FALSE)
+{
+  if(is.null(model$methodName)){
+    stop("Method name is not set. Set problem$method or model$methodName.")
+  }
+
+  if(model$methodName == "uta-g")
+  {
+    utag(model, allowInconsistency)
+  } else if(model$methodName == "utamp-1")
+  {
+    utamp1(model, allowInconsistency)
+  } else if(model$methodName == "utamp-2")
+  {
+    utamp2(model, allowInconsistency)
+  } else {
+    stop(paste("Method", model$method, "is not available."))
+  }
+}
 #UTA-G
 #' @export
 utag <- function(model, allowInconsistency = FALSE)
