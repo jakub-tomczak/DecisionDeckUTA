@@ -28,6 +28,7 @@ source("utils.R")
 source("inputsHandler.R")
 source("outputsHandler.R")
 source("UTA.R")
+source("calculationsUTA.R")
 # restore the working directory so that relative paths passed as
 # arguments work as expected
 if (!is.null(script.wd)) setwd(script.wd)
