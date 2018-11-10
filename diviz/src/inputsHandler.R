@@ -1,110 +1,126 @@
+library(purrr)
+library(stringr)
+alternativesToInt <- function(alternativesNames){
+  #if a number has not been found NA is returned
+  as.integer( str_extract(alternativesNames, "\\d") )
+}
+
+# Creates a list of strong, weak preferences, indifferences
+# each element in a list is a list returned from processPreferences function
+getPreferences <- function(xmcdaData, alternatives, programExecutionResult) {
+  out <- list()
+  for(i in seq(xmcdaData$alternativesMatricesList$size()) )
+  {
+    preference <- xmcdaData$alternativesMatricesList$get(as.integer(i-1))
+    preferenceList <- processPreferences(preference, alternatives$alternatives)
+    if(!(preferenceList$relationName %in% c("strong", "weak", "indifference")))
+    {
+      programExecutionResult(xmcdaMessages, errors = paste("Preference name", preferenceList$relationName , "is not valid"))
+    }
+    if(preferenceList$relationName == "strong"){
+      out$strong <- preferenceList$relationPairs
+    } else if(preferenceList$relationName == "weak"){
+      out$weak <- preferenceList$relationPairs
+    } else {
+      out$indifference <- preferenceList$relationPairs
+    }
+  }
+  out
+}
+
+# Creates a list consisting of two fields: relationName and relationPairs
+# Each pair consists of two ids represented by two integers
+processPreferences <- function(preferencesMatrix, alternatives) {
+  #relationsMatrix list of characters on indices with a pair of alternatives defined in alternativesComparisons.xml 
+  relationsMatrix <- outer(alternatives, alternatives, Vectorize(function(item1, item2) {
+    #add a pair if relation exists
+    if(!is.null(preferencesMatrix$get(item1, item2)))
+      #create a vector from this pair and cast its values to integers, "a1" "a2" -> 1 2
+      alternativesToInt(c(item1$id(), item2$id()))
+  }))
+  
+  #filter out NULL values, return value is a vector
+  relationsVec <- Filter(Negate(is.null), relationsMatrix)
+  #create two column matrix with pairs in rows
+  relationsVec <- matrix(unlist(relationsVec), ncol = 2)
+  
+  list(
+    relationName = preferencesMatrix$id(),
+    relationPairs = relationsVec
+  )
+}
+
 checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
-  if(xmcdaData$alternatives.isEmpty())
+  #getMatrixValue(xmcdaData$alternativesMatricesList, as.integer(0), as.integer())
+  if(xmcdaData$alternatives$isEmpty())
   {
-    stop("There should be at least one alternative.")
+    putProgramExecutionResult(xmcdaMessages, errors="There should be at least one alternative.")
   }
-  nrAlternatives <-length(xmcdaData$alternatives)
+  alternatives <- getActiveAlternatives(xmcdaData)
+  #cast alternatives names to ints
+  alternatives$alternativesIDs <- alternativesToInt(alternatives$alternativesIDs)
   
-  if(xmcdaData$criteria.isEmpty())
+  if(xmcdaData$criteria$isEmpty())
   {
-    stop("There should be at least one criterion.")
+    putProgramExecutionResult(xmcdaMessages, errors = "There should be at least one criterion.")
   }
-  nrCriteria <- length(xmcdaData$critera)
+  criteria <- getActiveCriteria(xmcdaData)
   
-  #create preferences matrix
-  preferences <- matrix(nrow = nrAlternatives, ncol = nrCriteria)
   
-  #process criteria.xml
-  criteriaTypes <- sapply(xmcdaData$criteria, function(x){
-    type <- x$scale$quantitative$preferenceDirection
-    if(type == "min")
-    {
-      'c'
-    }
-    else if(type == "max")
-    {
-      'g'
-    }
-    else
-    {
-      stop(paste("Unknown criterion type:", type))
-    }
-  })
+  #create performance matrix
+  performanceMatrix <- getNumericPerformanceTableList(xmcdaData)
+  if(is.list(performanceMatrix))
+  {
+    performanceMatrix <- performanceMatrix[[1]]
+  }
+  if(!is.matrix(performanceMatrix))
+  {
+    putProgramExecutionResult(xmcdaMessages, errors = "An error occured when processing preferences matrix. Check xml file with performanceMatrix." )
+  }
+  #assign integer ids to rownames
+  row.names(performanceMatrix) <- alternativesToInt(row.names(performanceMatrix))
+  
+  
+  #process criteria scales, after conversion to v3
+  criteriaDirections <-  getCriteriaPreferenceDirectionsList(xmcdaData)
+  if(is.null(criteriaDirections))
+  {
+    putProgramExecutionResult(xmcdaMessages, errors = "Criteria directions cannot be null.")
+  }
+  else if(length(criteriaDirections) == 0)
+  {
+    putProgramExecutionResult(xmcdaMessages, errors = "Criteria directions cannot be empty.")
+  }
+  criteriaDirections <-c(sapply(criteriaDirections, function(x){
+    ifelse(x=="min", 'c', 'g')
+  }))
+  
   
   #process characteristicPoints.xml
-  characteristicPoints <- rep(2, nrCriteria)
-  if(!is.null(xmcdaData$characteristicPoints))
+  #set 2 characteristic points on all criteria by default
+  characteristicPoints <- rep(2, criteria$numberOfCriteria)
+  criteriaValuesList <- getNumericCriteriaValuesList(xmcdaData)
+  if(!is.null(criteriaValuesList) && !is.null(criteriaValuesList$characteristicPoints))
   {
-    if(length(xmcdaData$characteristicPoints) != nrCriteria)
+    if(length(criteriaValuesList$characteristicPoints) != criteria$numberOfCriteria)
     {
-     stop("If list with number of characteristic points is defined, its length should be equal to the number of criteria.")
+      putProgramExecutionResult(xmcdaMessages, errors = "If characteristic points are defined, number of them should match the number of criteria.")
     }
-    characteristicPoints <- sapply(xmcdaData$characteristicPoints, function(x){
-      x$criterionValue$value$integer
-    })
+    characteristicPoints <- c(criteriaValuesList$characteristicPoints)
   }
   
-  #process preferences files
-  strongPreferences <- NULL
-  weakPreferences <- NULL
-  indifference <- NULL
-  if(!is.null(xmcdaData$strongPreferences) && !xmcdaData$strongPreferences.isEmpty())
-  {
-    strongPreferences <- sapply(xmcdaData$strongPreferences$pairs, function(x){
-      sapply(x.pair, function(y){
-        c(y$initial$alternativeID, y$terminal$alternativeID)
-      })
-    })
-  }
-  if(!is.null(xmcdaData$weakPreferences) && !xmcdaData$weakPreferences.isEmpty())
-  {
-    weakPreferences <- sapply(xmcdaData$weakPreferences$pairs, function(x){
-      sapply(x.pair, function(y){
-        c(y$initial$alternativeID, y$terminal$alternativeID)
-      })
-    })
-  }
-  if(!is.null(xmcdaData$indifference) && !xmcdaData$indifference.isEmpty())
-  {
-    indifference <- sapply(xmcdaData$indifference$pairs, function(x){
-      sapply(x.pair, function(y){
-        c(y$initial$alternativeID, y$terminal$alternativeID)
-      })
-    })
-  }
-  
+  #parse preferences
+  preferencesList <-getPreferences(xmcdaData, alternatives, programExecutionResult)
+
   #parse methodParameters.xml
   method <- "utag"
-  if(!is.null(xmcdaData$methodParameters))
-  {
-    rawMethod <- xmcdaData$methodParameters$methodName
-    if(!is.null(rawMethod))
-    {
-      if(rawMethod == 1)
-      {
-        method = "utag"
-      } 
-      else if (rawMethod == 2)
-      {
-        method = "utamp1"
-      } 
-      else if (rawMethod == 3)
-      {
-        method = "utamp2"
-      }
-      else
-      {
-        stop("Unknown method")
-      }
-    }
-    
-  }
-  
-  source("calculations.R")  
+
   #validate data and build problem
-  problem <- buildProblem(preferences, criteriaTypes, characteristicPoints, 
-                          strongPreference = strongPreference,
-                          weakPreferences = weakPreferences,
-                          indifference = indifference)
+  problem <- buildProblem(performanceTable = performanceMatrix,
+                          criteria = criteriaDirections,
+                          characteristicPoints = characteristicPoints, 
+                          strongPreference = preferencesList$strong,
+                          weakPreferences = preferencesList$weak,
+                          indifference = preferencesList$indifference)
   return(problem)
 }

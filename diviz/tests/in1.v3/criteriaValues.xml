@@ -2,20 +2,23 @@
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-3.0.2" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="http://www.decision-deck.org/2017/XMCDA-3.0.2 http://www.decision-deck.org/xmcda/_downloads/XMCDA-3.0.2.xsd">
-
-    <criteriaValues>
+    <criteriaValues id="characteristicPoints">
         <criterionValue>
             <criterionID>g1</criterionID>
-            <value>
+            <values>
+              <value>
                 <integer>4</integer>
-            </value>
+              </value>
+            </values>
         </criterionValue>
         
         <criterionValue>
             <criterionID>g2</criterionID>
-            <value>
+            <values>
+              <value>
                 <integer>3</integer>
-            </value>
+              </value>
+            </values>
         </criterionValue>
     </criteriaValues>
 </xmcda:XMCDA>

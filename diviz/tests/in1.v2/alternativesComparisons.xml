@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+    <alternativesComparisons id="strong">
+        <pairs>
+            <pair>
+                <initial>
+                    <!-- it's important to have alternativeIDs in one line, otherwise parser creates new alternatives with \n -->
+                    <alternativeID>a1</alternativeID>
+                </initial>
+                <terminal>
+                    <alternativeID>a2</alternativeID>
+                </terminal>
+            </pair>
+            <pair>
+                <initial>
+                    <!-- it's important to have alternativeIDs in one line, otherwise parser creates new alternatives with \n -->
+                    <alternativeID>a2</alternativeID>
+                </initial>
+                <terminal>
+                    <alternativeID>a4</alternativeID>
+                </terminal>
+            </pair>
+        </pairs>
+    </alternativesComparisons>
+    <alternativesComparisons id="weak">
+        <pairs>
+            <pair>
+                <initial>
+                    <alternativeID>a3</alternativeID>
+                </initial>
+                <terminal>
+                    <alternativeID>a1</alternativeID>
+                </terminal>
+            </pair>
+        </pairs>
+    </alternativesComparisons>
+</xmcda:XMCDA>
