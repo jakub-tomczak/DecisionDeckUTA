@@ -30,11 +30,14 @@
             </xmcda>
 		</input>
 
-		<input id="characteristicPoints" name="characteristicPoints" displayName="Characteristic points" isoptional="1">
+		<input id="criteriaValues" name="criteriaValues" displayName="Criteria values" isoptional="1">
 			<documentation>
-				<description>Number of characteristic points in the criteria.</description>
+				<description>
+                Options of the criteria. Criteria values with id="characteristicPoints" 
+                keeps values of the number of the characteristic points on the criteria.
+                </description>
 			</documentation>
-			<xmcda tag="characteristicPoints">
+			<xmcda tag="criteriaValues">
                 <![CDATA[	
                     <criteriaValues>
                         <criterionValue>
@@ -83,13 +86,17 @@
             </xmcda>
 		</input>
 
-		<input id="strongPreferences" name="strongPreferences" displayName="strongPreferences" isoptional="1">
+		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Comparisons between alternatives" isoptional="1">
 			<documentation>
-				<description>Pariwise strong preferences relations between alternatives. Alternatives are referred by their IDs.</description>
+				<description>
+                Pariwise comparison relations between alternatives. Alternatives are referred by their IDs.
+                Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. 
+                Available types of comparisons are: 'strong', 'weak', 'indifference'.
+                </description>
 			</documentation>
-			<xmcda tag="strongPreferences">
+			<xmcda tag="alternativesComparisons">
                 <![CDATA[
-                    <alternativesComparisons>
+                    <alternativesComparisons id=[...]>
                         <comparisonType>[...]</comparsionType>
                         <pairs>
                             <pair>
@@ -107,55 +114,7 @@
             </xmcda>
 		</input>
 
-		<input id="weakPreferences" name="weakPreferences" displayName="weakPreferences" isoptional="1">
-			<documentation>
-				<description>Pariwise weak preferences relations between alternatives. Alternatives are referred by their IDs.</description>
-			</documentation>
-			<xmcda tag="weakPreferences">
-                <![CDATA[
-                    <alternativesComparisons>
-                        <comparisonType>[...]</comparsionType>
-                        <pairs>
-                            <pair>
-                                <initial>
-                                    <alternativeID>[...]</alternativeID>
-                                </initial>
-                                <terminal>
-                                    <alternativeID>[...]</alternativeID>
-                                </terminal>
-                            </pair>
-                            [...]
-                        </pairs>
-                    </alternativesComparisons>
-                ]]>
-            </xmcda>
-		</input>
-
-        <input id="indifferences" name="indifferences" displayName="indifferences" isoptional="1">
-			<documentation>
-				<description>Pariwise indifference relations between alternatives. Alternatives are referred by their IDs.</description>
-			</documentation>
-			<xmcda tag="indifferences">
-                <![CDATA[
-                    <alternativesComparisons>
-                        <comparisonType>[...]</comparsionType>
-                        <pairs>
-                            <pair>
-                                <initial>
-                                    <alternativeID>[...]</alternativeID>
-                                </initial>
-                                <terminal>
-                                    <alternativeID>[...]</alternativeID>
-                                </terminal>
-                            </pair>
-                            [...]
-                        </pairs>
-                    </alternativesComparisons>
-                ]]>
-            </xmcda>
-		</input>
-
-		<input id="methodParameters" name="parameters" displayName="method" isoptional="1">
+		<input id="methodParameters" name="methodParameters" displayName="method" isoptional="1">
 			<documentation>
 				<description>Which method should be used as a solver, available options { 1 : "UTA-G", 2 : "UTAMP-1", 3 : "UTAMP-2"}.</description>
 			</documentation>

@@ -46,13 +46,11 @@ outDirectory <- commandArgs(trailingOnly=TRUE)[2]
 # filenames
 
 criteriaFile <- "criteria.xml"
-characteristicPointsFile <- "characteristicPoints.xml"
+criteriaValuesFile <- "criteriaValues.xml"
 alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
-strongPreferencesFile <- "strongPreferences.xml"
-weakPreferencesFile <- "weakPreferences.xml"
-indifferencesFile <- "indifferences.xml"
-parametersFile <- "parameters.xml"
+alternativesComparisonsFile <- "alternativesComparisons.xml"
+methodParametersFile <- "methodParameters.xml"
 valueFunctionsFile <- "valueFunctions.xml"
 rankingFile <- "ranking.xml"
 messagesFile <- "messages.xml"
@@ -63,13 +61,11 @@ xmcdaMessages<-.jnew("org/xmcda/XMCDA")
 xmcdaData <- .jnew("org/xmcda/XMCDA")
 
 loadXMCDAv3(xmcdaData, inDirectory, criteriaFile, mandatory = TRUE, xmcdaMessages, "criteria")
-loadXMCDAv3(xmcdaData, inDirectory, characteristicPointsFile, mandatory = TRUE, xmcdaMessages, "characteristicPoints")
+loadXMCDAv3(xmcdaData, inDirectory, criteriaValuesFile, mandatory = FALSE, xmcdaMessages, "criteriaValues")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesFile, mandatory = TRUE, xmcdaMessages, "alternatives")
 loadXMCDAv3(xmcdaData, inDirectory, performanceTableFile, mandatory = TRUE, xmcdaMessages, "performanceTable")
-loadXMCDAv3(xmcdaData, inDirectory, strongPreferencesFile, mandatory = FALSE, xmcdaMessages, "strongPreferences")
-loadXMCDAv3(xmcdaData, inDirectory, weakPreferencesFile, mandatory = FALSE, xmcdaMessages, "weakPreferences")
-loadXMCDAv3(xmcdaData, inDirectory, indifferencesFile, mandatory = FALSE, xmcdaMessages, "indifferences")
-loadXMCDAv3(xmcdaData, inDirectory, parametersFile, mandatory = FALSE, xmcdaMessages, "methodParameters")
+loadXMCDAv3(xmcdaData, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages, "alternativesComparisons")
+loadXMCDAv3(xmcdaData, inDirectory, methodParametersFile, mandatory = FALSE, xmcdaMessages, "methodParameters")
 
 # if we have problem with the inputs, it is time to stop
 
