@@ -152,8 +152,8 @@
 				</entry>
 			</gui>
 		</input>
-
-        <output id="ranking" name="ranking" displayName="Final ranking">
+        
+        <!--<output id="ranking" name="ranking" displayName="Final ranking">
             <documentation>
                 <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
             </documentation>
@@ -175,6 +175,13 @@
                     </alternativesValues>
                 ]]>
             </xmcda>
+        </output>-->
+
+        <output id="alternatives" name="alternatives" displayName="Alternatives global utility values">
+            <documentation>
+                <description>Global utility values for all alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"/>
         </output>
 
 		<output id="messages" name="messages" displayName="messages">

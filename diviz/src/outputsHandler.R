@@ -5,13 +5,13 @@
 
 XMCDA_v2_TAG_FOR_FILENAME <- list(
   # output name -> XMCDA v2 tag
-  ranking = "alternativesValues",
+  alternatives = "alternativesValues",
   messages = "methodMessages"
 )
 
 XMCDA_v3_TAG_FOR_FILENAME <- list(
   # output name -> XMCDA v3 tag
-  ranking = "alternativesValues",
+  alternatives = "alternativesValues",
   messages = "programExecutionResult"
 )
 
@@ -24,6 +24,8 @@ xmcda_v2_tag <- function(outputName){
 }
 
 convertAlternatives <- function(alternativesMatrix){
+  xmcdaResult <- .jnew("org/xmcda/XMCDA")
+  
   alternativeValuesList <-.jnew("org/xmcda/AlternativesValues")
   for (i in seq(nrow(alternativesMatrix))){
     alternative <- .jnew("org/xmcda/v2/AlternativeValue")
@@ -38,7 +40,19 @@ convertAlternatives <- function(alternativesMatrix){
     })
     alternativeValuesList$put(alternative,.jnew("java/lang/Double",as.numeric(i)))
   }
-  alternativeValuesList
+  xmcdaResult$alternativesValuesList$add(alternativeValuesList)
+  xmcdaResult
+  #alternativeValuesList
+}
+
+convertUtilityValueInAlternatives <- function(alternatives){
+  xmcda <- .jnew("org/xmcda/XMCDA")
+  javaAlternativesValues<-.jnew("org/xmcda/AlternativesValues")
+  for (i in 1:nrow(alternatives)){
+    javaAlternativesValues$put(.jnew("org/xmcda/Alternative",paste("a", i, sep="")),.jnew("java/lang/Double",as.numeric(alternatives[[i, 2]])))
+  }
+  xmcda$alternativesValuesList$add(javaAlternativesValues)
+  return(xmcda)
 }
 
 convert <- function(results, programExecutionResult) {
@@ -49,5 +63,5 @@ convert <- function(results, programExecutionResult) {
   # if an error occurs, return null, else a dictionnary "xmcdaTag -> xmcdaObject"
   
   #ranking
-  list(alternativesValues = convertAlternatives(results$ranking))
+  list(alternativesValues = convertUtilityValueInAlternatives(results$ranking))
 }

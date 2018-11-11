@@ -52,7 +52,7 @@ alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
 alternativesComparisonsFile <- "alternativesComparisons.xml"
 methodParametersFile <- "methodParameters.xml"
-rankingFile <- "ranking.xml"
+alternativesFile <- "alternatives.xml"
 messagesFile <- "messages.xml"
 
 # the Java xmcda object for the output messages
