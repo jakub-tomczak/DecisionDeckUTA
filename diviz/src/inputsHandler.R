@@ -9,6 +9,10 @@ alternativesToInt <- function(alternativesNames){
 # each element in a list is a list returned from processPreferences function
 getPreferences <- function(xmcdaData, alternatives, programExecutionResult) {
   out <- list()
+  if(xmcdaData$alternativesMatricesList$size() == 0)
+  {
+    return(out)
+  }
   for(i in seq(xmcdaData$alternativesMatricesList$size()) )
   {
     preference <- xmcdaData$alternativesMatricesList$get(as.integer(i-1))
