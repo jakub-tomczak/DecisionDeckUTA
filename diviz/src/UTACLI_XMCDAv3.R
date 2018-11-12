@@ -47,6 +47,7 @@ outDirectory <- commandArgs(trailingOnly=TRUE)[2]
 
 criteriaFile <- "criteria.xml"
 criteriaValuesFile <- "criteriaValues.xml"
+criteriaScalesFile <- "criteriaScales.xml"
 alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
 alternativesComparisonsFile <- "alternativesComparisons.xml"
@@ -61,6 +62,7 @@ xmcdaData <- .jnew("org/xmcda/XMCDA")
 
 loadXMCDAv3(xmcdaData, inDirectory, criteriaFile, mandatory = TRUE, xmcdaMessages, "criteria")
 loadXMCDAv3(xmcdaData, inDirectory, criteriaValuesFile, mandatory = FALSE, xmcdaMessages, "criteriaValues")
+loadXMCDAv3(xmcdaData, inDirectory, criteriaScalesFile, mandatory = FALSE, xmcdaMessages, "criteriaScales")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesFile, mandatory = TRUE, xmcdaMessages, "alternatives")
 loadXMCDAv3(xmcdaData, inDirectory, performanceTableFile, mandatory = TRUE, xmcdaMessages, "performanceTable")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages, "alternativesComparisons")
