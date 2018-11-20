@@ -1,6 +1,8 @@
 library(purrr)
 library(stringr)
-alternativesToInt <- function(alternativesNames){
+
+#replaces text with the first number found in this text 
+idToInt <- function(alternativesNames){
   #if a number has not been found NA is returned
   as.integer( str_extract(alternativesNames, "\\d") )
 }
@@ -40,7 +42,7 @@ processPreferences <- function(preferencesMatrix, alternatives) {
     #add a pair if relation exists
     if(!is.null(preferencesMatrix$get(item1, item2)))
       #create a vector from this pair and cast its values to integers, "a1" "a2" -> 1 2
-      alternativesToInt(c(item1$id(), item2$id()))
+      idToInt(c(item1$id(), item2$id()))
   }))
   
   #filter out NULL values, return value is a vector
@@ -62,7 +64,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   }
   alternatives <- getActiveAlternatives(xmcdaData)
   #cast alternatives names to ints
-  alternatives$alternativesIDs <- alternativesToInt(alternatives$alternativesIDs)
+  alternatives$alternativesIDs <- idToInt(alternatives$alternativesIDs)
   
   if(xmcdaData$criteria$isEmpty())
   {
@@ -82,7 +84,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
     putProgramExecutionResult(xmcdaMessages, errors = "An error occured when processing preferences matrix. Check xml file with performanceMatrix." )
   }
   #assign integer ids to rownames
-  row.names(performanceMatrix) <- alternativesToInt(row.names(performanceMatrix))
+  row.names(performanceMatrix) <- idToInt(row.names(performanceMatrix))
   
   
   #process criteria scales, after conversion to v3
@@ -106,11 +108,9 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   criteriaValuesList <- getNumericCriteriaValuesList(xmcdaData)
   if(!is.null(criteriaValuesList) && !is.null(criteriaValuesList$characteristicPoints))
   {
-    if(length(criteriaValuesList$characteristicPoints) != criteria$numberOfCriteria)
-    {
-      putProgramExecutionResult(xmcdaMessages, errors = "If characteristic points are defined, number of them should match the number of criteria.")
-    }
-    characteristicPoints <- c(criteriaValuesList$characteristicPoints)
+    # convert names of criteria into numbers
+    indices <- idToInt(names(criteriaValuesList$characteristicPoints))
+    characteristicPoints[indices] <- c(criteriaValuesList$characteristicPoints)
   }
   
   #parse preferences
