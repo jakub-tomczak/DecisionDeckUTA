@@ -120,7 +120,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   programParameters <- getProgramParametersList(xmcdaData)
   
   #parse methodParameters.xml
-  method <- ifelse(is.null(programParameters$programParameters$methodSettings$methodName), 
+  method <- ifelse(is.null(programParameters$methodSettings$methodName), 
                    "uta-g",
                    programParameters$methodSettings$methodName)
 
