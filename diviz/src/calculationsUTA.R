@@ -290,7 +290,7 @@ buildPairwiseComparisonConstraint <- function(alternativeIndex, referenceAlterna
 
   if (preferenceType == "strong") {
     if (!is.null(model$kIndex)) {
-      lhs[model$kIndex] <- -1
+      lhs[model$kIndex] <- 1
     } else {
       assert(!is.null(model$minEpsilon), "Model has not an epsilon and minEpsilon is not set.")
       rhs <- -model$minEpsilon
@@ -413,7 +413,7 @@ validatePreferenceRelation <- function(preferenceRelation, numberOfPreferences)
 
 #Solver method used when model$methodName is set
 #' @export
-solve <- function(model, allowInconsistency = FALSE)
+solveProblem <- function(model, allowInconsistency = FALSE)
 {
   if(is.null(model$methodName)){
     stop("Method name is not set. Set problem$method or model$methodName.")
@@ -497,7 +497,7 @@ utamp1 <- function(model, allowInconsistency = FALSE) {
 #UTAMP-2
 #' @export
 utamp2 <- function(model, allowInconsistency = FALSE) {
-  objectiveIndex <- c(model$roIndex, model$kIndex)
+  objectiveIndex <- c(model$rhoIndex, model$kIndex)
 
   objective <- createObjective(model$constraints$lhs, objectiveIndex)
   solution <- extremizeVariable(objective, model$constraints, maximize = TRUE)
