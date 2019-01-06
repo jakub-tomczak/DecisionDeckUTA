@@ -110,7 +110,7 @@
             </xmcda>
 		</input>
 
-		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Comparisons between alternatives" isoptional="1">
+		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Pariwise comparisons between alternatives" isoptional="1">
 			<documentation>
 				<description>
                 Pariwise comparison relations between alternatives. Alternatives are referred by their IDs.
@@ -118,25 +118,37 @@
                 Available types of comparisons are: 'strong', 'weak', 'indifference'.
                 </description>
 			</documentation>
-			<xmcda tag="alternativesComparisons">
-                <![CDATA[
-                    <alternativesComparisons id=[...]>
-                        <comparisonType>[...]</comparsionType>
-                        <pairs>
-                            <pair>
-                                <initial>
-                                    <alternativeID>[...]</alternativeID>
-                                </initial>
-                                <terminal>
-                                    <alternativeID>[...]</alternativeID>
-                                </terminal>
-                            </pair>
-                            [...]
-                        </pairs>
-                    </alternativesComparisons>
-                ]]>
-            </xmcda>
+			<xmcda tag="alternativesMatrix"/>
 		</input>
+
+		<input id="intensitiesOfPreferences" name="intensitiesOfPreferences" displayName="Pariwise comparisons between alternatives" isoptional="1">
+			<documentation>
+				<description>
+                Set of comparisons of intensities of preference. 
+                </description>
+			</documentation>
+			<xmcda tag="alternativesSetsMatrix"/>
+		</input>
+
+        <input id="rankRelatedRequirements" name="rankRelatedRequirements" displayName="Rank related requirements" isoptional="1">
+            <documentation>
+                <description>Set of rank-related requirements. In other words it is a set of ranges of possible positions in the final ranking for a chosen alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues>
+                    <alternativeValue>
+                        <alternativeID>%1</alternativeID>
+                        <value>
+                            <interval>
+                                <lowerBound><integer>%2</integer></lowerBound>
+                                <upperBound><integer>%3</integer></upperBound>
+                            </interval>
+                        </value>
+                    </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </input>
 
 		<input id="methodParameters" name="methodParameters" displayName="method" isoptional="1">
 			<documentation>
@@ -171,41 +183,76 @@
 							<description>UTAMP-1</description>
 							<value>utamp-2</value>
 						</item>
+                        <item id="roruta">
+							<description>RORUTA</description>
+							<value>roruta</value>
+						</item>
 					</items>
 					<defaultValue>1</defaultValue>
 				</entry>
 			</gui>
 		</input>
-        
-        <!--<output id="ranking" name="ranking" displayName="Final ranking">
-            <documentation>
-                <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
-            </documentation>
-            <xmcda tag="alternativesValues">
-                <![CDATA[
-                    <alternativesValues>
-						<alternativeValue>
-							<alternativeID>[...]</alternativeID>
-                            <values>
-                                <value id="utilityValue">
-                                    <real>[...]</real>
-                                </value>
-                                <value id="positionInRanking">
-                                    <integer>[..]</integer>
-                                </value>
-                            </values>
-						 </alternativeValue>
-                        [...]
-                    </alternativesValues>
-                ]]>
-            </xmcda>
-        </output>-->
 
         <output id="alternatives" name="alternatives" displayName="Alternatives global utility values">
             <documentation>
                 <description>Global utility values for all alternatives.</description>
             </documentation>
             <xmcda tag="alternativesValues"/>
+        </output>
+        
+        <output id="valueFunctions" name="valueFunctions" displayName="Utility functions elicited from a model">
+            <documentation>
+                <description>Elicited value functions.</description>
+            </documentation>
+            <xmcda tag="criteriaFunctions"/>
+        </output>
+
+        <output id="bestRanking" name="bestRanking" displayName="Best ranking" optional="1">
+            <documentation>
+                <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues id=[...]>
+                    <alternativeValue>
+                        <alternativeID>[...]</alternativeID>
+                        <value>
+                            <integer>[...]</integer>
+                        </value>
+                        </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </output>
+
+        <output id="worstRanking" name="worstRanking" displayName="Worst ranking" optional="1">
+            <documentation>
+                <description>The worst possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues id=[...]>
+                    <alternativeValue>
+                        <alternativeID>[...]</alternativeID>
+                        <value>
+                            <integer>[...]</integer>
+                        </value>
+                        </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </output>
+
+        <output id="necessaryRelations" name="necessaryRelations" displayName="Necessary relations from roruta method"  isoptional="1">
+            <documentation>
+                <description>A list of all necessary weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesMatrix" />
+        </output>
+
+        <output id="possibleRelations" name="possibleRelations" displayName="Possible relations from roruta method" isoptional="1">
+            <documentation>
+                <description>A list of all possible weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"/>
         </output>
 
 		<output id="messages" name="messages" displayName="messages">

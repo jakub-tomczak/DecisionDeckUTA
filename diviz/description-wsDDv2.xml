@@ -6,9 +6,9 @@
      version="1.0" />
     <documentation>
         <description>This module contains UTA solvers (UTA-G, UTAMP-1, UTAMP-2)</description>
-        <contact>Jakub Tomczak (jakub.tomczak@live.com)</contact>
+        <contact><![CDATA[Jakub Tomczak (jakub.tomczak@live.com)]]></contact>
         <url></url>
-        <reference></reference>
+        <reference>KADZINSKI2012541, Corrente2013</reference>
     </documentation>
     <parameters>
 		<input id="criteria" name="criteria" displayName="Description of criteria">
@@ -86,7 +86,7 @@
             </xmcda>
 		</input>
 
-		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Comparisons between alternatives" isoptional="1">
+		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Pariwise comparisons between alternatives" isoptional="1">
 			<documentation>
 				<description>
                 Pariwise comparison relations between alternatives. Alternatives are referred by their IDs.
@@ -96,8 +96,10 @@
 			</documentation>
 			<xmcda tag="alternativesComparisons">
                 <![CDATA[
-                    <alternativesComparisons id=[...]>
-                        <comparisonType>[...]</comparsionType>
+                    <alternativesComparisons>
+                        <comparisonType>
+                            [...]
+                        </comparsionType>
                         <pairs>
                             <pair>
                                 <initial>
@@ -107,12 +109,68 @@
                                     <alternativeID>[...]</alternativeID>
                                 </terminal>
                             </pair>
-                            [...]
                         </pairs>
                     </alternativesComparisons>
                 ]]>
             </xmcda>
 		</input>
+
+        <input id="intensitiesOfPreferences" name="intensitiesOfPreferences" displayName="Intensities of preferences" isoptional="1">
+            <documentation>
+                <description>Set of comparisons of intensities of preference.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons>
+                    <comparisonType>
+                        [...]
+                    </comparisonType>
+                    <pairs>
+                        <pair>
+                            <initial>
+                                <alternativesSet>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                </alternativesSet>  
+                            </initial>
+                            <terminal>
+                                <alternativesSet>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                </alternativesSet>
+                            </terminal>
+                        </pair>
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
+        </input>
+
+        <input id="rankRelatedRequirements" name="rankRelatedRequirements" displayName="Rank related requirements" isoptional="1">
+            <documentation>
+                <description>Set of rank-related requirements. In other words it is a set of ranges of possible positions in the final ranking for a chosen alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues>
+                    <alternativeValue>
+                        <alternativeID>%1</alternativeID>
+                        <value>
+                            <interval>
+                                <lowerBound><integer>%2</integer></lowerBound>
+                                <upperBound><integer>%3</integer></upperBound>
+                            </interval>
+                        </value>
+                    </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </input>
 
 		<input id="methodParameters" name="methodParameters" displayName="method" isoptional="1">
 			<documentation>
@@ -147,41 +205,104 @@
 							<description>UTAMP-1</description>
 							<value>utamp-2</value>
 						</item>
+                        <item id="roruta">
+							<description>RORUTA</description>
+							<value>roruta</value>
+						</item>
 					</items>
 					<defaultValue>1</defaultValue>
 				</entry>
 			</gui>
 		</input>
-        
-        <!--<output id="ranking" name="ranking" displayName="Final ranking">
-            <documentation>
-                <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
-            </documentation>
-            <xmcda tag="alternativesValues">
-                <![CDATA[
-                    <alternativesValues>
-						<alternativeValue>
-							<alternativeID>[...]</alternativeID>
-                            <values>
-                                <value id="utilityValue">
-                                    <real>[...]</real>
-                                </value>
-                                <value id="positionInRanking">
-                                    <integer>[..]</integer>
-                                </value>
-                            </values>
-						 </alternativeValue>
-                        [...]
-                    </alternativesValues>
-                ]]>
-            </xmcda>
-        </output>-->
 
         <output id="alternatives" name="alternatives" displayName="Alternatives global utility values">
             <documentation>
                 <description>Global utility values for all alternatives.</description>
             </documentation>
             <xmcda tag="alternativesValues"/>
+        </output> 
+              
+        <output id="valueFunctions" name="valueFunctions" displayName="Utility functions elicited from a model">
+            <documentation>
+                <description>Elicited value functions.</description>
+            </documentation>
+            <xmcda tag="criteriaFunctions"/>
+        </output>
+
+        <output id="best-ranking" name="best-ranking" displayName="best ranking" optional="1">
+            <documentation>
+                <description>The best possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues id=[...]>
+                    <alternativeValue>
+                        <alternativeID>[...]</alternativeID>
+                        <value>
+                            <integer>[...]</integer>
+                        </value>
+                        </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </output>
+
+        <output id="worst-ranking" name="worst-ranking" displayName="worst ranking" optional="1">
+            <documentation>
+                <description>The worst possible ranking positions that may be attained by the alternatives taking into consideration all value functions that are compatible with the preference information.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues id=[...]>
+                    <alternativeValue>
+                        <alternativeID>[...]</alternativeID>
+                        <value>
+                            <integer>[...]</integer>
+                        </value>
+                        </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </output>
+
+        <output id="necessaryRelations" name="necessaryRelations" displayName="Necessary relations from roruta method"  isoptional="1">
+            <documentation>
+                <description>A list of all necessary weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons mcdaConcept="necessaryRelations" id="%1">
+                    <pairs>
+                        <pair>
+                        <initial>
+                            <alternativeID>%2</alternativeID>
+                        </initial>
+                        <terminal>
+                            <alternativeID>%3</alternativeID>
+                        </terminal>
+                        </pair>
+                        [...]
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
+        </output>
+
+        <output id="possibleRelations" name="possibleRelations" displayName="Possible relations from roruta method" isoptional="1">
+            <documentation>
+                <description>A list of all possible weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons mcdaConcept="possibleRelations" id=%1>
+                    <pairs>
+                        <pair>
+                        <initial>
+                            <alternativeID>%1</alternativeID>
+                        </initial>
+                        <terminal>
+                            <alternativeID>%2</alternativeID>
+                        </terminal>
+                        </pair>
+                        [...]
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
         </output>
 
 		<output id="messages" name="messages" displayName="messages">
