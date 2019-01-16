@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+    <alternativesMatrix id="strong">
+        <row>
+            <alternativeID>a1</alternativeID>
+            <column>
+                <alternativeID>a2</alternativeID>
+            </column>
+        </row>
+    </alternativesMatrix>
+        <alternativesMatrix id="weak">
+        <row>
+            <alternativeID>a3</alternativeID>
+            <column>
+                <alternativeID>a1</alternativeID>
+            </column>
+        </row>
+    </alternativesMatrix>
+</xmcda:XMCDA>
