@@ -1,6 +1,6 @@
 #! /bin/bash
 # Usage:
-#  UTA.sh [--v2|--v3] input_dir output_dir
+#  UTA_RepresentativeValueFunction.sh [--v2|--v3] input_dir output_dir
 
 # Adapt if needed.  R v3.x is required
 # Use the full path here
@@ -21,10 +21,10 @@ if [ ! $# == 3 ]; then
   echo "Usage: $0 [--v2|--v3] input_dir output_dir" >&2
   exit 3
 elif [ $1 = "--v3" ]; then
-  R --slave --vanilla --file=src/UTACLI_XMCDAv3.R --args $2 $3
+  R --slave --vanilla --file=src/UTA_RepresentativeValueFunctionCLI_XMCDAv3.R --args $2 $3
   ret=$?
 elif [ $1 = "--v2" ]; then
-  R --slave --vanilla --file=src/UTACLI_XMCDAv2.R --args $2 $3
+  R --slave --vanilla --file=src/UTA_RepresentativeValueFunctionCLI_XMCDAv2.R --args $2 $3
   ret=$?
 else
   echo "Usage: $0 [--v2|--v3] input_dir output_dir" >&2

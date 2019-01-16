@@ -1,5 +1,5 @@
 # usage:
-# R --slave --vanilla --file=UTACLI_XMCDAv2.R --args "[inDirectory]" "[outDirectory]"
+# R --slave --vanilla --file=UTA_RepresentativeValueFunctionCLI_XMCDAv2.R --args "[inDirectory]" "[outDirectory]"
 
 rm(list=ls())
 
@@ -27,8 +27,7 @@ script.wd <- setwd(script.dir())
 source("utils.R")
 source("inputsHandler.R")
 source("outputsHandler.R")
-source("UTA.R")
-source("calculationsUTA.R")
+source("UTA_RepresentativeValueFunction.R")
 # restore the working directory so that relative paths passed as
 # arguments work as expected
 if (!is.null(script.wd)) setwd(script.wd)
@@ -41,19 +40,19 @@ outDirectory <- commandArgs(trailingOnly=TRUE)[2]
 # Override the directories here: uncomment this when testing from inside R e.g.
 # (uncomment this when testing from inside R e.g.)
 
-#inDirectory <- "/path/to/UTA/tests/in1.v2"
-#outDirectory <- "/path/to/UTA/tests/out_tmp/"
+#inDirectory <- "/path/to/UTA_RepresentativeValueFunction/tests/in1.v2"
+#outDirectory <- "/path/to/UTA_RepresentativeValueFunction/tests/out_tmp/"
 
 # filenames
 
 criteriaFile <- "criteria.xml"
 criteriaValuesFile <- "criteriaValues.xml"
-criteriaScalesFile <- "criteriaScales.xml"
 alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
 alternativesComparisonsFile <- "alternativesComparisons.xml"
 methodParametersFile <- "methodParameters.xml"
 alternativesFile <- "alternatives.xml"
+valueFunctionsFile <- "valueFunctions.xml"
 messagesFile <- "messages.xml"
 
 # the Java xmcda object for the output messages
@@ -63,7 +62,6 @@ xmcdaData <- .jnew("org/xmcda/XMCDA")
 
 loadXMCDAv3(xmcdaData, inDirectory, criteriaFile, mandatory = TRUE, xmcdaMessages, "criteria")
 loadXMCDAv3(xmcdaData, inDirectory, criteriaValuesFile, mandatory = FALSE, xmcdaMessages, "criteriaValues")
-loadXMCDAv3(xmcdaData, inDirectory, criteriaScalesFile, mandatory = FALSE, xmcdaMessages, "criteriaScales")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesFile, mandatory = TRUE, xmcdaMessages, "alternatives")
 loadXMCDAv3(xmcdaData, inDirectory, performanceTableFile, mandatory = TRUE, xmcdaMessages, "performanceTable")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages, "alternativesComparisons")
@@ -95,7 +93,7 @@ if (xmcdaMessages$programExecutionResultsList$size()>0){
 
 results <- handleException(
   function() return(
-    UTA(inputs)
+    UTA_RepresentativeValueFunction(inputs)
   ),
   xmcdaMessages,
   humanMessage = "The calculation could not be performed, reason: "
@@ -105,7 +103,7 @@ results <- handleException(
 
 if (is.null(results)){
   writeXMCDA(xmcdaMessages, paste(outDirectory,messagesFile, sep="/"))
-  stop("Could not calculate UTA.")
+  stop("Could not calculate UTA_RepresentativeValueFunction.")
 }
 
 
@@ -115,7 +113,7 @@ xResults = convert(results, xmcdaMessages)
 
 if (is.null(xResults)){
   writeXMCDA(xmcdaMessages, paste(outDirectory,messagesFile, sep="/"))
-  stop("Could not convert UTA results into XMCDA")
+  stop("Could not convert UTA_RepresentativeValueFunction results into XMCDA")
 }
 
 # and last, write them onto the disk

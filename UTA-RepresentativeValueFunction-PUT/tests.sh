@@ -1,6 +1,6 @@
 #! /bin/bash
 
-CMD="./UTA.sh"
+CMD="./UTA_RepresentativeValueFunction.sh"
 
 if [ $# != 1 ]; then
   echo "Usage: ${0} [--v2|--v3]" >&2

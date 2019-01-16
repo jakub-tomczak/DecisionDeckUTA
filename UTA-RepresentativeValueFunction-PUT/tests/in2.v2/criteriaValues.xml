@@ -15,5 +15,12 @@
                 <integer>3</integer>
             </value>
         </criterionValue>
+
+        <criterionValue>
+            <criterionID>g4</criterionID>
+            <value>
+                <integer>5</integer>
+            </value>
+        </criterionValue>
     </criteriaValues>
 </xmcda:XMCDA>
