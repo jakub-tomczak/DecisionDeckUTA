@@ -1,5 +1,6 @@
-UTA_RepresentativeValueFunction <- function(inputs)
+UTA_RepresentativeValueFunction <- function(model)
 {
-  # calculation goes here
-  return(...)
+  library(Rglpk)
+  solveProblem(model, allowInconsistency = TRUE)
 }
+

@@ -130,7 +130,8 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
                           characteristicPoints = characteristicPoints, 
                           strongPreference = preferencesList$strong,
                           weakPreferences = preferencesList$weak,
-                          indifference = preferencesList$indifference,
-                          method = method)
-  return(problem)
+                          indifferenceRelations = preferencesList$indifference)
+  
+  model <- buildModel(problem, method)
+  model
 }
