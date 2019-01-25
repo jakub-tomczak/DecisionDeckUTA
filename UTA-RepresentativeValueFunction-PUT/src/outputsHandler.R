@@ -137,6 +137,6 @@ convert <- function(results, programExecutionResult) {
   
   list(
     alternativesMarginalUtility = alternatives,
-    marginalValueFunctions = xmcda
+    marginalValueFunctions = functions
   )
 }
