@@ -47,13 +47,13 @@ outDirectory <- commandArgs(trailingOnly=TRUE)[2]
 # filenames
 
 criteriaFile <- "criteria.xml"
-criteriaValuesFile <- "criteriaValues.xml"
+characteristicPointsFile <- "characteristicPoints.xml"
 alternativesFile <- "alternatives.xml"
 performanceTableFile <- "performanceTable.xml"
 alternativesComparisonsFile <- "alternativesComparisons.xml"
 methodParametersFile <- "methodParameters.xml"
-alternativesFile <- "alternatives.xml"
-valueFunctionsFile <- "valueFunctions.xml"
+alternativesMarginalUtilityFile <- "alternativesMarginalUtility.xml"
+marginalValueFunctionsFile <- "marginalValueFunctions.xml"
 messagesFile <- "messages.xml"
 
 # the Java xmcda object for the output messages
@@ -63,7 +63,7 @@ xmcdaDatav2 <- .jnew("org/xmcda/v2/XMCDA")
 xmcdaData <- .jnew("org/xmcda/XMCDA")
 
 loadXMCDAv2(xmcdaDatav2, inDirectory, criteriaFile, mandatory = TRUE, xmcdaMessages,"criteria")
-loadXMCDAv2(xmcdaDatav2, inDirectory, criteriaValuesFile, mandatory = FALSE, xmcdaMessages,"criteriaValues")
+loadXMCDAv2(xmcdaDatav2, inDirectory, characteristicPointsFile, mandatory = FALSE, xmcdaMessages,"criteriaValues")
 loadXMCDAv2(xmcdaDatav2, inDirectory, alternativesFile, mandatory = TRUE, xmcdaMessages,"alternatives")
 loadXMCDAv2(xmcdaDatav2, inDirectory, performanceTableFile, mandatory = TRUE, xmcdaMessages,"performanceTable")
 loadXMCDAv2(xmcdaDatav2, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages,"alternativesComparisons")
