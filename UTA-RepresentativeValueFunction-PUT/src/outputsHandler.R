@@ -5,15 +5,15 @@
 
 XMCDA_v2_TAG_FOR_FILENAME <- list(
   # output name -> XMCDA v2 tag
-  alternatives = "alternativesValues",
+  alternativesMarginalUtility = "alternativesValues",
   marginalValueFunctions = "criteria",
   messages = "methodMessages"
 )
 
 XMCDA_v3_TAG_FOR_FILENAME <- list(
   # output name -> XMCDA v3 tag
-  alternatives = "alternativesValues",
-  marginalValueFunction = "criteriaFunctions",
+  alternativesMarginalUtility = "alternativesValues",
+  marginalValueFunctions = "criteriaFunctions",
   messages = "programExecutionResult"
 )
 
@@ -57,47 +57,69 @@ convertUtilityValueInAlternatives <- function(alternatives){
   xmcda
 }
 
-convertValueFunctions <- function(valueFunctions){
+convertValueFunctions <- function(results){
+  
+  valueFunctions <- results$valueFunctionsMarginalValues
+  
+  performancesColnames <- colnames(results$performances)
+  if(is.null(performancesColnames))
+  {
+    criteriaNames <- paste("g", 1:ncol(valueFunctions), sep = "")
+  } 
+  else
+  {
+    criteriaNames <- performancesColnames
+  }
+  
   xmcda <- .jnew("org/xmcda/XMCDA")
   javaMarginalFunctions <- .jnew("org/xmcda/CriteriaFunctions")
+  
   for(i in 1:ncol(valueFunctions)){
+    
     valueFunction <- valueFunctions[, i]
     # for each criterion
     criterionFunctions <- .jnew("org/xmcda/CriterionFunctions")
     criterionFunction <- .jnew("org/xmcda/value/PiecewiseLinearFunction")
-    criterion <- .jnew("org/xmcda/Criterion", paste("g", i, sep=""))
+    criterion <- .jnew("org/xmcda/Criterion", criteriaNames[i], criteriaNames[i])
     
     for(pointIndex in length(valueFunction$characteristicPointsX)-1){
       segment <- .jnew("org/xmcda/value/Segment")
       
-      head.x <- .jnew("java/lang/Double", as.numeric(1.1)) # valueFunction$characteristicPointsX[pointIndex])
+      head.x <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsX[pointIndex]))
       head.y <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsY[pointIndex]))
       head.point <- .jnew("org/xmcda/value/Point")
       head.qualifiedValueX <- .jnew("org/xmcda/QualifiedValue")
       head.qualifiedValueX$setValue(head.x)
       head.qualifiedValueY <- .jnew("org/xmcda/QualifiedValue")
-      head.qualifiedValueX$setValue(head.y)
+      head.qualifiedValueY$setValue(head.y)
       head.point$setAbscissa(head.qualifiedValueX)
       head.point$setOrdinate(head.qualifiedValueY)
       
       head <- .jnew("org/xmcda/value/EndPoint", head.point)
       
-      tail.x <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsX[pointIndex]))
-      tail.y <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsY[pointIndex]))
+      tail.x <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsX[pointIndex+1]))
+      tail.y <- .jnew("java/lang/Double", as.numeric(valueFunction$characteristicPointsY[pointIndex+1]))
       tail.point <- .jnew("org/xmcda/value/Point")
       tail.qualifiedValueX <- .jnew("org/xmcda/QualifiedValue")
       tail.qualifiedValueX$setValue(tail.x)
       tail.qualifiedValueY <- .jnew("org/xmcda/QualifiedValue")
-      tail.qualifiedValueX$setValue(tail.y)
+      tail.qualifiedValueY$setValue(tail.y)
       tail.point$setAbscissa(tail.qualifiedValueX)
       tail.point$setOrdinate(tail.qualifiedValueY)
       
       tail <- .jnew("org/xmcda/value/EndPoint", tail.point)
       
+      segment$setHead(head)
+      segment$setTail(tail)
+      
       criterionFunction$add(segment)
     }
     
     criterionFunctions$add(criterionFunction)
+    
+    # little hack, criteria must be included in the XMCDA object
+    # otherwise converter_V2toV3 won't get CriteriaFunctions into consideration  
+    xmcda$criteria$add(criterion)
     javaMarginalFunctions$put(criterion, criterionFunctions)
   }
   xmcda$criteriaFunctionsList$add(javaMarginalFunctions)
@@ -111,10 +133,10 @@ convert <- function(results, programExecutionResult) {
   # translate the results into XMCDA v3
   # if an error occurs, return null, else a dictionnary "xmcdaTag -> xmcdaObject"
   alternatives <- convertUtilityValueInAlternatives(results$ranking)
-  functions <- convertValueFunctions(results$valueFunctionsMarginalValues)
-  #ranking
+  functions <- convertValueFunctions(results)
+  
   list(
-    alternativesValues = alternatives,
-    criteriaFunctions = functions
+    alternativesMarginalUtility = alternatives,
+    marginalValueFunctions = xmcda
   )
 }
