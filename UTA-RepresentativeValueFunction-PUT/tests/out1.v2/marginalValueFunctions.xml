@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+    <criteria>
+        <criterion id="g1" name="g1">
+            <active>true</active>
+            <criterionFunction>
+                <piecewiseLinear>
+                    <segment>
+                        <head>
+                            <abscissa>
+<real>2.0</real>
+                            </abscissa>
+                            <ordinate>
+<real>0.0</real>
+                            </ordinate>
+                        </head>
+                        <tail>
+                            <abscissa>
+<real>7.0</real>
+                            </abscissa>
+                            <ordinate>
+<real>0.75</real>
+                            </ordinate>
+                        </tail>
+                    </segment>
+                </piecewiseLinear>
+            </criterionFunction>
+        </criterion>
+        <criterion id="g2" name="g2">
+            <active>true</active>
+            <criterionFunction>
+                <piecewiseLinear>
+                    <segment>
+                        <head>
+                            <abscissa>
+<real>0.4</real>
+                            </abscissa>
+                            <ordinate>
+<real>0.25</real>
+                            </ordinate>
+                        </head>
+                        <tail>
+                            <abscissa>
+<real>1.2</real>
+                            </abscissa>
+                            <ordinate>
+<real>0.0</real>
+                            </ordinate>
+                        </tail>
+                    </segment>
+                </piecewiseLinear>
+            </criterionFunction>
+        </criterion>
+    </criteria>
+</xmcda:XMCDA>

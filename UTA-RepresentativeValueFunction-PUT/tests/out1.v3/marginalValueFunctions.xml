@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2018/XMCDA-3.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2018/XMCDA-3.1.0 http://www.decision-deck.org/xmcda/_downloads/XMCDA-3.1.0.xsd">
+	<criteriaFunctions>
+		<criterionFunction>
+			<criterionID>g1</criterionID>
+			<functions>
+				<function>
+					<piecewiseLinear>
+						<segment>
+							<head open="false">
+								<abscissa>
+									<real>2.0</real>
+								</abscissa>
+								<ordinate>
+									<real>0.0</real>
+								</ordinate>
+							</head>
+							<tail open="false">
+								<abscissa>
+									<real>7.0</real>
+								</abscissa>
+								<ordinate>
+									<real>0.75</real>
+								</ordinate>
+							</tail>
+						</segment>
+					</piecewiseLinear>
+				</function>
+			</functions>
+		</criterionFunction>
+		<criterionFunction>
+			<criterionID>g2</criterionID>
+			<functions>
+				<function>
+					<piecewiseLinear>
+						<segment>
+							<head open="false">
+								<abscissa>
+									<real>0.4</real>
+								</abscissa>
+								<ordinate>
+									<real>0.25</real>
+								</ordinate>
+							</head>
+							<tail open="false">
+								<abscissa>
+									<real>1.2</real>
+								</abscissa>
+								<ordinate>
+									<real>0.0</real>
+								</ordinate>
+							</tail>
+						</segment>
+					</piecewiseLinear>
+				</function>
+			</functions>
+		</criterionFunction>
+	</criteriaFunctions>
+</xmcda:XMCDA>
