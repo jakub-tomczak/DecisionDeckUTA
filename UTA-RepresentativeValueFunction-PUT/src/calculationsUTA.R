@@ -19,15 +19,27 @@ assert <- function(expression, message)
 
 #' @export
 buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumber = 1e9) { # includeEpsilonAsVariable,
-  includeRho <- TRUE
-  includeK <- TRUE
-
   availableMethods <- getAvailableMethods()
   assert(method %in% availableMethods, paste(availableMethods, " "))
   nrAlternatives <- nrow(problem$performance)
   nrCriteria <- ncol(problem$performance)
 
+  # used in monotonicity constraint
+  includeRho <- FALSE
+  # used in strong preference constraint
+  includeK <- FALSE
+  includeEpsilon <- TRUE
 
+  rhoEpsilon <- 0
+  epsilonEpsilon <- 0
+  if(method == availableMethods$utamp1){
+    includeK <- TRUE
+  } else if(method == availableMethods$utamp2){
+    includeRho <- TRUE
+    includeK <- TRUE
+  } else if(method == availableMethods$roruta){
+    includeEpsilon <- TRUE
+  }
   #preferences to model variables used in solution
   coefficientsMatrix <- calculateCoefficientsMatrix(problem)
 
@@ -37,10 +49,18 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
   numberOfVariables <- problem$numberOfVariables + ifelse(includeRho, 1, 0) + ifelse(includeK, 1, 0)
   rhoIndex <- NULL
   kIndex <- NULL
+  epsilonIndex <- NULL
+
+  assert(xor(includeK, includeEpsilon), "K and epsilon should not be acitve simultaneously")
   if(includeRho)
     rhoIndex <- numberOfVariables-1
-  if(includeK)
+  if(includeK){
     kIndex <- numberOfVariables
+  }
+  if(includeEpsilon){
+    epsilonIndex <- numberOfVariables
+  }
+
 
   # constraints
   constraints <- list()
@@ -54,7 +74,7 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
 
   ## monotonicity of vf
   constraints <- combineConstraints(constraints,
-                                    monotonicityConstraints(problem, numberOfVariables, nrCriteria, rhoIndex))
+                                    monotonicityConstraints(problem, numberOfVariables, nrCriteria, rhoIndex, rhoEpsilon))
 
   lhs.colnames <- colnames(coefficientsMatrix)
   if(includeRho)
@@ -64,6 +84,11 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
   if(includeK)
   {
     lhs.colnames <- c(lhs.colnames, "k")
+  }
+  if(includeEpsilon)
+  {
+    lhs.colnames <- c(lhs.colnames, "eps")
+    constraints$lhs <- cbind(constraints$lhs, 0)
   }
 
   colnames(constraints$lhs) <- lhs.colnames
@@ -79,6 +104,7 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
     criteriaIndices = problem$criteriaIndices,
     rhoIndex = rhoIndex,
     kIndex = kIndex,
+    epsilonIndex = epsilonIndex,
     chPoints = problem$characteristicPoints,
     preferencesToModelVariables = coefficientsMatrix,
     criterionPreferenceDirection = problem$criteria,
@@ -100,15 +126,7 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
                                           pairwisePreferenceConstraints(problem, model, "indifference"))
 
   # method specific actions
-  if(method == availableMethods$utag){
-    # exchange k variable with a small positive constant
-    # get indices of all constraints that use k
-    constraintsWithKIndex <- which(model$constraints$lhs[, model$kIndex] %in% 1)
-    model <- removeColumnsFromModelConstraints(model, model$kIndex)
-    if(length(constraintsWithKIndex) > 0){
-      model$constraints$rhs[constraintsWithKIndex] = minK
-    }
-  } else if(method == availableMethods$roruta){
+  if(method == availableMethods$roruta){
     model$constraints <- combineConstraints(model$constraints,
                                             intensitiesConstraints(problem, model, "strong"))
 
@@ -116,13 +134,10 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
                                             intensitiesConstraints(problem, model, "weak"))
     model$constraints <- combineConstraints(model$constraints,
                                             intensitiesConstraints(problem, model, "indifference"))
-    # remove rho
-    model <- removeColumnsFromModelConstraints(model, model$rhoIndex)
 
-    # rename k to epsilon
-    model$epsilonIndex <- model$kIndex
-    # remove k index
-    model$kIndex <- NULL
+    # we can add here column names, merging current colnames with "epsilon" would fail,
+    # because after adding a column, R automatically adds an empty label for that new column
+    model$epsilonIndex <- ncol(model$constraints$lhs)
 
     # rank requirements
     # add constraints for the desiredRank and desiredUtilityValue
@@ -155,11 +170,11 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
       model$constraints$variablesTypes <- desiredRankConstraints$variablesTypes
     }
   } else if(method == availableMethods$utamp1){
-    model$constraints <- splitVariable(model, model$kIndex)
+    model$constraints <- splitVariable(model, model$kIndex, "k")
   } else if(method == availableMethods$utamp2) {
     # split rho into rho_jk
-    model$constraints <- splitVariable(model, model$rhoIndex)
-    model$constraints <- splitVariable(model, model$kIndex)
+    model$constraints <- splitVariable(model, model$rhoIndex, "rho")
+    model$constraints <- splitVariable(model, model$kIndex, "k")
   }
 
   rownames(model$constraints$lhs) <- model$constraints$constraints.labels
@@ -173,40 +188,25 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
 #### HELPERS
 analysePositionInRanking <- function(model, alternative, rankType){
   assert(rankType %in% c("min", "max"), "rankType may be either min or max.")
-  hasAlternativeRankRequirementsInModel <- !is.na(model$rankConstraintsFirstBinaryVariableIndices[alternative])
   nrAlternatives <- nrow(model$preferencesToModelVariables)
 
   rankingAnalysisConstraints <-
-    createConstraintsForExtremeRankAnalysis(model, alternative, rankType, hasAlternativeRankRequirementsInModel)
+    createConstraintsForExtremeRankAnalysis(model, alternative, rankType)
 
   #merge new constraints with the model's ones
   constraints <- model$constraints
-  if(!hasAlternativeRankRequirementsInModel){
-    # add some columns to lhs
-    numberOfAdditionalColumns <- ncol(rankingAnalysisConstraints$lhs) - ncol(constraints$lhs)
-    constraints$lhs <- cbind(constraints$lhs, matrix(0, nrow=nrow(constraints$lhs), ncol=numberOfAdditionalColumns))
-  }
+  numberOfAdditionalColumns <- ncol(rankingAnalysisConstraints$lhs) - ncol(constraints$lhs)
+  constraints$lhs <- cbind(constraints$lhs, matrix(0, nrow=nrow(constraints$lhs), ncol=numberOfAdditionalColumns))
+
 
   constraints <- combineConstraints(constraints, rankingAnalysisConstraints)
 
+  startIndex <- ncol(constraints$lhs)-(nrAlternatives-1)
   objective <- rep(0, ncol(constraints$lhs))
-  startIndex <- 0
+  objective[startIndex:ncol(constraints$lhs)] <- 1
+  objective[startIndex+alternative-1] <- 0
+  stopIndex <- startIndex + nrAlternatives - 1
 
-  if(hasAlternativeRankRequirementsInModel){
-    objectiveIndices <-
-      seq(ifelse(rankType=="min", 0, 1), 2*nrAlternatives-1, 2) + model$rankConstraintsFirstBinaryVariableIndices[alternative]
-    objective[objectiveIndices] <- 1
-    # don't set 1 in lhs on the current alternative's indices
-    objective[model$rankConstraintsFirstBinaryVariableIndices[alternative]+2*(alternative-1)+ifelse(rankType=="min", 0, 1)] <- 0
-    startIndex <- model$rankConstraintsFirstBinaryVariableIndices[alternative]
-    stopIndex <- startIndex + 2*nrAlternatives - 1
-  } else {
-    startIndex <- ncol(constraints$lhs)-(nrAlternatives-1)
-    objective[startIndex:ncol(constraints$lhs)] <- 1
-    objective[startIndex+alternative-1] <- 0
-    stopIndex <- startIndex + nrAlternatives - 1
-  }
-  # solve
   solution <- extremizeVariable(objective, constraints, maximize=FALSE)
   if(validateSolution(solution, allowInconsistency = TRUE, minEpsilon = model$minEpsilon)){
     return(sum(solution$solution[startIndex:stopIndex]))
@@ -214,7 +214,7 @@ analysePositionInRanking <- function(model, alternative, rankType){
   NULL
 }
 
-createConstraintsForExtremeRankAnalysis <- function(model, alternative, rankType, hasAlternativeRankRequirementsInModel){
+createConstraintsForExtremeRankAnalysis <- function(model, alternative, rankType){
   constraints <- list()
   nrAlternatives <- nrow(model$preferencesToModelVariables)
   modelsNumberOfVariables <- ncol(model$constraints$lhs)
@@ -230,13 +230,10 @@ createConstraintsForExtremeRankAnalysis <- function(model, alternative, rankType
                                                                         referenceAlternativeIndex = i,
                                                                         model)
 
-        if(hasAlternativeRankRequirementsInModel){
-          bPositionInLHS <- model$rankConstraintsFirstBinaryVariableIndices[alternative] + (i-1)*2
-        } else {
-          # augment LHS to represent alternative's v_b
-          lhs <- c(lhs, rep(0, nrAlternatives))
-          bPositionInLHS <- modelsNumberOfVariables + i
-        }
+
+        # augment LHS to represent alternative's v_b
+        lhs <- c(lhs, rep(0, nrAlternatives))
+        bPositionInLHS <- modelsNumberOfVariables + i
 
         constraints.labels <- paste("extremeRank_v_>", alternative, ",", i, sep="")
       } else {
@@ -247,14 +244,8 @@ createConstraintsForExtremeRankAnalysis <- function(model, alternative, rankType
         # put U(a) - U(b) into the LHS
         lhs[1:length(utilityValuesDifference)] <- utilityValuesDifference
 
-
-        if(hasAlternativeRankRequirementsInModel){
-          bPositionInLHS <- model$rankConstraintsFirstBinaryVariableIndices[alternative] + (i-1)*2 + 1
-        } else {
-          lhs <- c(lhs, rep(0, nrAlternatives))
-          bPositionInLHS <- modelsNumberOfVariables + i
-        }
-
+        lhs <- c(lhs, rep(0, nrAlternatives))
+        bPositionInLHS <- modelsNumberOfVariables + i
         constraints.labels <- paste("extremeRank_v_<", alternative, ",", i, sep="")
       }
 
@@ -272,13 +263,9 @@ createConstraintsForExtremeRankAnalysis <- function(model, alternative, rankType
   }
 
   variablesTypes <- c()
-  if(hasAlternativeRankRequirementsInModel) {
-    colnames(constraints$lhs) <- colnames(model$constraints$lhs)
-  } else {
-    newColnames <- paste("v_", rankType, "_", alternative, "_", 1:nrAlternatives, sep="")
-    colnames(constraints$lhs) <- c(colnames(model$constraints$lhs), newColnames)
-    variablesTypes <- rep("B", nrAlternatives)
-  }
+  newColnames <- paste("v_", rankType, "_", alternative, "_", 1:nrAlternatives, sep="")
+  colnames(constraints$lhs) <- c(colnames(model$constraints$lhs), newColnames)
+  variablesTypes <- rep("B", nrAlternatives)
 
   constraints$variablesTypes <- variablesTypes
   rownames(constraints$lhs) <- constraints$constraints.labels
@@ -298,9 +285,9 @@ checkPreferenceRelationFeasibility <- function(model, alternative, referenceAlte
   solution <- extremizeVariable(objective, constraints, maximize=TRUE)
 
   if(relationType == "necessary"){
-    return(solution$status != 0 || solution$optimum < model$minEpsilon)
+    return(solution$status != 0 || solution$optimum < 0)
   } else if(relationType == "possible") {
-    return(solution$status == 0 && solution$optimum >=model$minEpsilon)
+    return(solution$status == 0 && solution$optimum >= 0)
   }
 }
 
@@ -408,6 +395,8 @@ createRankRelatedConstraints <- function(problem, model, minEpsilon, bigNumber=1
       binaryVariables <- rep(0, numberOfBinaryVariables)
       startIndex <- (i - 1)*2*nrAlternatives + ifelse(type=="lower", 1, 2)
       indicesForSum <- seq(startIndex, startIndex + 2*nrAlternatives - 1, 2)
+      # remove current alternative from being added to the sum
+      indicesForSum <- indicesForSum[-i]
       binaryVariables[indicesForSum] <- 1
       LHS <- c(rep(0, currentLHSColumnsNumber), binaryVariables)
       desiredRankConstraintsLHS <- rbind(desiredRankConstraintsLHS, LHS)
@@ -482,7 +471,8 @@ leastValuableChPointsEqualZero <- function(problem, numberOfVariables, numberOfC
   constraints
 }
 
-monotonicityConstraints <- function(problem, numberOfVariables, numberOfCriteria, rhoIndex){
+# default epsilon value  = 1e-4
+monotonicityConstraints <- function(problem, numberOfVariables, numberOfCriteria, rhoIndex, epsilon){
   ## monotonicity of vf
   constraints <- list()
   for (j in seq_len(numberOfCriteria)) {
@@ -498,8 +488,17 @@ monotonicityConstraints <- function(problem, numberOfVariables, numberOfCriteria
         lhs[problem$criteriaIndices[j] + k] <- 1
       }
 
-      if (problem$strictVF) {
+      if (problem$strictVF && !is.null(rhoIndex)) {
         lhs[rhoIndex] <- 1
+      }
+
+      # if rho is null use small positive number to emphasize the difference between
+      # successive characteristic points
+      if(is.null(rhoIndex))
+      {
+        assert(!is.null(epsilon), "Epslion parameter cannot be null if rhoIndex is null as well.")
+        # epsilon should be mutiplied by -1 in order to use "<=" direction in constraint
+        rhs <- -epsilon
       }
 
       constraints <- combineConstraints(constraints,
@@ -733,7 +732,9 @@ buildPairwiseComparisonConstraint <- function(alternativeIndex, referenceAlterna
   rhs <- 0
 
   if (preferenceType == "strong") {
-    if (!is.null(model$kIndex)) {
+    if (!is.null(model$epsilonIndex)) {
+      lhs[model$epsilonIndex] <- 1
+    } else if (!is.null(model$kIndex)) {
       lhs[model$kIndex] <- 1
     } else {
       assert(!is.null(model$minEpsilon), "Model has not an epsilon and minEpsilon is not set.")
@@ -758,7 +759,7 @@ buildPairwiseComparisonConstraint <- function(alternativeIndex, referenceAlterna
 
   return (list(lhs = lhs, dir = dir, rhs = rhs, constraints.labels = constraints.labels))
 }
-
+# TODO add combining decision variables names
 combineConstraints <- function(...) {
   allConst <- list(...)
 
@@ -839,7 +840,7 @@ removeColumnsFromModelConstraints <- function(model, columnsIndices){
   )
 }
 
-splitVariable <- function(model, variableIndex){
+splitVariable <- function(model, variableIndex, variableName){
   colsInConstraints <- ncol(model$constraints$lhs)
 
   # find all indices of constraints where variableIndex is enabled <==> 1
@@ -869,7 +870,7 @@ splitVariable <- function(model, variableIndex){
       # -partialVariable
       lhs[columnsIterator] <- -1
 
-      constraint <- list(lhs = lhs, dir = "<=", rhs = 0, constraints.labels = "var_i<var")
+      constraint <- list(lhs = lhs, dir = "<=", rhs = 0, constraints.labels = paste(variableName, "_i<", variableName, sep=""))
       # add new constraint: partialVariable >= variable
       constraints <- combineConstraints(constraints, constraint)
 
@@ -926,19 +927,25 @@ validateModel <- function(performanceTable, criteria, characteristicPoints,
                           indifferenceIntensitiesRelations,
                           desiredRank)
 {
+  if(is.data.frame(performanceTable))
+  {
+    performanceTable <- data.matrix(performanceTable)
+  }
   validate(is.matrix(performanceTable), "performanceTable", "performanceTable must be a matrix.")
 
-  numberOfPreferences <- nrow(performanceTable)
   numberOfCriterions <- ncol(performanceTable)
-  validate(ncol(criteria) == numberOfCriterions, "numberOfCriterions","Number of criteria given in performanceTable matrix is not equal to the number of criteria names.")
-  validate(all(criteria %in% c("c", "g")), "criteria", "Criteria must be of type `c` or `g`.")
+  validate(length(criteria) == numberOfCriterions, "numberOfCriterions",
+           "Number of criteria given in performanceTable matrix is not equal to the number of criteria names.")
+  validate(length(characteristicPoints) == numberOfCriterions, "characteristicPoints",
+           paste("There should be ", numberOfCriterions, "characteristic points defined. Got", length(characteristicPoints)))
+  validate(all(criteria %in% c("c", "g")), "criteria", "Criteria must be of type `c` (cost) or `g` (gain).")
 
-  validateRelations(strongPreferences, numberOfPreferences, relationName = "strong")
-  validateRelations(weakPreferences, numberOfPreferences, relationName = "weak")
-  validateRelations(indifferenceRelations, numberOfPreferences, relationName = "indifference")
-  validateRelations(strongIntensitiesPreferences, numberOfPreferences, arity = 4, relationName = "strongIntensities")
-  validateRelations(weakIntensitiesPreferences, numberOfPreferences, arity = 4, relationName = "weakIntensities")
-  validateRelations(indifferenceIntensitiesRelations, numberOfPreferences, arity = 4, relationName = "indifferenceIntensities")
+  strongPreferences <- validateRelations(strongPreferences, performanceTable, relationName = "strong preference")
+  weakPreferences <- validateRelations(weakPreferences, performanceTable, relationName = "weak preference")
+  indifferenceRelations <- validateRelations(indifferenceRelations, performanceTable, relationName = "indifference")
+  strongIntensitiesPreferences <- validateRelations(strongIntensitiesPreferences, performanceTable, arity = 4, relationName = "strongIntensities preference")
+  weakIntensitiesPreferences <- validateRelations(weakIntensitiesPreferences, performanceTable, arity = 4, relationName = "weakIntensities preference")
+  indifferenceIntensitiesRelations <- validateRelations(indifferenceIntensitiesRelations, performanceTable, arity = 4, relationName = "indifferenceIntensities")
 
   validateDesiredRank(desiredRank, performanceTable, "desiredRank")
 
@@ -957,12 +964,15 @@ validateModel <- function(performanceTable, criteria, characteristicPoints,
   ))
 }
 
-validateRelations <- function(relation, numberOfPreferences, arity = 2, relationName = "unknown")
+validateRelations <- function(relation, performances, arity = 2, relationName = "unknown")
 {
-  action <- "validateRelations"
+  numberOfPreferences <- nrow(performances)
+  action <- paste(relationName, "relation")
 
   if(!is.null(relation))
   {
+    relation <- translateRelationsStringsIntoAlternativesIds(relation, performances)
+
     validate(is.matrix(relation), action, paste("Relation", relationName, "must be repesented by a matrix"))
     validate(ncol(relation) == arity, action, paste("Relation", relationName, "has arity:", arity, ". Number of arguments typed:", ncol(relation), "."))
 
@@ -970,6 +980,7 @@ validateRelations <- function(relation, numberOfPreferences, arity = 2, relation
     validate(all(relation >= 1), action, "There is no preference with index lower than 1")
     validate(all(relation <= numberOfPreferences), action, paste("There is no preference with index higher than:", numberOfPreferences, ". Typed a preference with index:", max(relation)))
   }
+  relation
 }
 
 validateDesiredRank <- function(desiredRank, performanceTable, action){
@@ -1031,8 +1042,10 @@ translateRelationsStringsIntoAlternativesIds <- function(relation, performances)
                paste("There is no alternative with a name corresponding to a relation's argument", relation[row, col]))
       newRow <- c(newRow, id)
     }
-    newRelationWithIds <- rbind(newRow)
+    newRelationWithIds <- rbind(newRelationWithIds, newRow)
   }
+  names <- paste("relation_", 1:nrow(newRelationWithIds), sep="")
+  rownames(newRelationWithIds) <- names
   newRelationWithIds
 }
 
@@ -1114,6 +1127,13 @@ utag <- function(model, allowInconsistency = FALSE)
   methodResult$localUtilityValues <- partialUtilityValues
   methodResult$ranking <- generateRanking(utilityValues)
   methodResult$valueFunctionsMarginalValues <- getValueFunctionsMarginalValues(model, VFMarginalValues)
+
+  # assign names
+  colnames(methodResult$localUtilityValues) <- colnames(model$performances)
+  rownames(methodResult$localUtilityValues) <- rownames(model$performances)
+
+  rownames(methodResult$ranking) <- rownames(model$performances)
+
   methodResult
 }
 
@@ -1187,9 +1207,17 @@ extremizeVariable <- function(objective, constraints, maximize) {
 
 getMethodResult <- function(model, solution){
   methodResult <- list()
+  alternativesNames <- rownames(model$performances)
+  criteriaNames <- colnames(model$performances)
+
   methodResult$localUtilityValues <- calculateUtilityValues(model, solution$solution)
+  colnames(methodResult$localUtilityValues) <- criteriaNames
+  rownames(methodResult$localUtilityValues) <- alternativesNames
+
   globalUtilityValues <- utilityValues <- apply(methodResult$localUtilityValues, MARGIN = 1, function(x){ sum(x) })
   methodResult$ranking <- generateRanking(globalUtilityValues)
+  rownames(methodResult$ranking) <- alternativesNames
+
   methodResult$valueFunctionsMarginalValues <- getValueFunctionsMarginalValues(model, solution$solution)
   methodResult
 }
@@ -1304,6 +1332,8 @@ necessaryAndPossiblePreferencesRelationAnalysis <- function(model){
 
 #' @export
 extremeRankingAnalysis <- function(model){
+  assert(model$methodName == "roruta",
+         "Extreme ranking analysis is only available in roruta model.")
   nrAlternatives <- nrow(model$preferencesToModelVariables)
   rankPositions <- matrix(nrow=nrAlternatives, ncol=2)
   colnames(rankPositions) <- c("min position", "max position")
