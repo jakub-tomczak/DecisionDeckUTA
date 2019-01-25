@@ -15,23 +15,16 @@
 			<xmcda tag="criteria">
                 <![CDATA[	
                     <criteria>
-                        <criterion id="[...]" name="[...]">
-                            <scale>
-                                <quantitative>
-                                    <preferenceDirection>[...]</preferenceDirection>
-                                </quantitative>
-                            </scale>
-                        </criterion>
+                        <criterion id="%1" name="%2"/>
+                        [...]
                     </criteria>
                 ]]>
             </xmcda>
 		</input>
 
-		<input id="criteriaValues" name="criteriaValues" displayName="Criteria values" isoptional="1">
+		<input id="characteristicPoints" name="characteristicPoints" displayName="Nuber of characteristic points" isoptional="1">
 			<documentation>
-				<description>
-                Options of the criteria. Criteria values with id="characteristicPoints" keeps values of the number of the characteristic points on the criteria.
-                </description>
+				<description>Options of the criteria. Indicates the number of characteristic points on criteria.</description>
 			</documentation>
 			<xmcda tag="criteriaValues">
                 <![CDATA[	
@@ -47,6 +40,28 @@
                 ]]>
             </xmcda>
 		</input>
+
+    	<input id="criteriaPreferenceDirections" name="criteriaPreferenceDirections" displayName="Criteria preferences directions">
+			<documentation>
+				<description>Options of the criteria. Denotes criteria preferences directions.</description>
+			</documentation>
+			<xmcda tag="criteriaScales">
+                <![CDATA[	
+                    <criteriaScales>
+                        <criterionScale>
+                            <scales>
+                                <scale>
+                                    <quantitative>
+                                        <preferenceDirection>[...]</preferenceDirection>
+                                    </quantitative>
+                                </scale>
+                            </scales>
+                        </criterionScale>
+                        [...]
+                    </criteriaScales>
+                ]]>
+            </xmcda>
+        </input>
 
 		<input id="alternatives" name="alternatives" displayName="Alternative list">
 			<documentation>
@@ -84,9 +99,7 @@
 
 		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Pariwise comparisons between alternatives" isoptional="1">
 			<documentation>
-				<description>
-                Pariwise comparison relations between alternatives. Alternatives are referred by their IDs. Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. Available types of comparisons are: 'strong', 'weak', 'indifference'.
-                </description>
+				<description>Pariwise comparison relations between alternatives. Alternatives are referred by their IDs. Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. Available types of comparisons are: 'strong', 'weak', 'indifference'.</description>
 			</documentation>
 			<xmcda tag="alternativesComparisons">
                 <![CDATA[
@@ -142,28 +155,39 @@
 							<description>UTAMP-1</description>
 							<value>utamp-2</value>
 						</item>
-                        <item id="roruta">
-							<description>RORUTA</description>
-							<value>roruta</value>
-						</item>
 					</items>
 					<defaultValue>1</defaultValue>
 				</entry>
 			</gui>
 		</input>
 
-        <output id="alternatives" name="alternatives" displayName="Alternatives global utility values">
+        <output id="alternativesMarginalUtility" name="alternativesMarginalUtility" displayName="Alternatives marginal utility values">
             <documentation>
-                <description>Global utility values for all alternatives.</description>
+                <description>Marginal utility values for all alternatives.</description>
             </documentation>
             <xmcda tag="alternativesValues"/>
         </output> 
               
-        <output id="valueFunctions" name="valueFunctions" displayName="Utility functions elicited from a model">
+        <output id="marginalValueFunctions"
+            name="marginalValueFunctions"
+            displayName="Marginal value function">
             <documentation>
-                <description>Elicited value functions.</description>
+                <description>Marginal value functions elicited from the model. The returned value is an XMCDA document whose main tag is criteria. It contains a description of characteristic points on all considered criteria.</description>
             </documentation>
-            <xmcda tag="criteriaFunctions"/>
+            <xmcda tag="criteriaFunctions">
+                <![CDATA[
+                    <criteriaFunctions>
+                        <criterionFunction>
+                            <criterionID id="%1">
+                                <functions>
+                                    <function>
+                                </functions>
+                            </criterionID>
+                        </criterionFunction>
+                        [...]
+                    </criteriaFunctions>
+                    ]]>
+            </xmcda>
         </output>
 
 		<output id="messages" name="messages" displayName="messages">

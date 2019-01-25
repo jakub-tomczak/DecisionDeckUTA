@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='utf-8'?>
+<program_description>
+    <program provider="PUT" name="UTA_RepresentativeValueFunction" displayName="UTA_RepresentativeValueFunction" version="1.0" />
+    <documentation>
+        <description>This module contains UTA solvers (UTA-G, UTAMP-1, UTAMP-2)</description>
+        <contact><![CDATA[Jakub Tomczak (jakub.tomczak@live.com)]]></contact>
+        <url></url>
+        <reference>KADZINSKI2012541</reference>
+    </documentation>
+    <parameters>
+		<input id="criteria" name="criteria" displayName="Description of criteria">
+			<documentation>
+				<description>A list of criteria.</description>
+			</documentation>
+			<xmcda tag="criteria">
+                <![CDATA[	
+                    <criteria>
+                        <criterion id="[...]" name="[...]">
+                            <scale>
+                                <quantitative>
+                                    <preferenceDirection>[...]</preferenceDirection>
+                                </quantitative>
+                            </scale>
+                        </criterion>
+                    </criteria>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="characteristicPoints" name="characteristicPoints" displayName="Nuber of characteristic points" isoptional="1">
+			<documentation>
+				<description>Options of the criteria. Indicates the number of characteristic points on criteria.</description>
+			</documentation>
+			<xmcda tag="criteriaValues">
+                <![CDATA[	
+                    <criteriaValues>
+                        <criterionValue>
+                            <criterionID>[...]</criterionID>
+                            <value>
+                                <integer>[...]</integer>
+                            </value>
+                        </criterionValue>
+                        [...]
+                    </criteriaValues>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="alternatives" name="alternatives" displayName="Alternative list">
+			<documentation>
+				<description>A list of alternatives. </description>
+			</documentation>
+			<xmcda tag="alternatives">
+                <![CDATA[	
+                    <alternatives>
+                        <alternative id="[...]" name="[...]"/>
+                    </alternatives>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="performanceTable" name="performanceTable" displayName="performanceTable">
+			<documentation>
+				<description>Values of criteria for different alternatives. Values of alternatives should be non-negative real numbers.</description>
+            </documentation>
+			<xmcda tag="performanceTable">
+                <![CDATA[
+                    <performanceTable>
+                        <alternativePerformances>
+                            <alternativeID>[...]</alternativeID>
+                            <performance>
+                                <criterionID>[...]</criterionID>
+                                <value>
+                                        <real>[...]</real>
+                                </value>
+                            </performance>
+                        </alternativePerformances>
+                    </performanceTable>       
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Pariwise comparisons between alternatives" isoptional="1">
+			<documentation>
+				<description>Pariwise comparison relations between alternatives. Alternatives are referred by their IDs. Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. Available types of comparisons are: 'strong', 'weak', 'indifference'.</description>
+			</documentation>
+			<xmcda tag="alternativesComparisons">
+                <![CDATA[
+                    <alternativesComparisons>
+                        <comparisonType>
+                            [...]
+                        </comparsionType>
+                        <pairs>
+                            <pair>
+                                <initial>
+                                    <alternativeID>[...]</alternativeID>
+                                </initial>
+                                <terminal>
+                                    <alternativeID>[...]</alternativeID>
+                                </terminal>
+                            </pair>
+                        </pairs>
+                    </alternativesComparisons>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="methodParameters" name="methodParameters" displayName="method" isoptional="1">
+			<documentation>
+				<description>Which method should be used as a solver, available options { "uta-g", "utamp-1", "utamp-2"}.</description>
+			</documentation>
+			<xmcda tag="methodParameters">
+                <![CDATA[
+                    <methodParameters>
+                        <parameter id="methodName" name="Name of the method that should be used in calculations.">
+                            <value>
+                                <label>%1</label>
+                            </value>
+                        </parameter>
+                    </methodParameters>
+                ]]>
+            </xmcda>
+			<gui status="preferGUI">
+				<entry id="%1" type="enum" displayName="Name of method to be used as a solver.">
+					<documentation>
+						<description>Name of the method to be used as a solver.</description>
+					</documentation>
+					<items>
+						<item id="utag">
+							<description>UTA-G</description>
+							<value>uta-g</value>
+						</item>
+						<item id="utamp1">
+							<description>UTAMP-2</description>
+							<value>utamp-1</value>
+						</item>
+                        <item id="utamp1">
+							<description>UTAMP-1</description>
+							<value>utamp-2</value>
+						</item>
+					</items>
+					<defaultValue>1</defaultValue>
+				</entry>
+			</gui>
+		</input>
+
+        <output id="alternativesMarginalUtility" name="alternativesMarginalUtility" displayName="Alternatives marginal utility values">
+            <documentation>
+                <description>Marginal utility values for all alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"/>
+        </output> 
+
+        <output id="marginalValueFunctions"
+            name="marginalValueFunctions"
+            displayName="Marginal value functions">
+            <documentation>
+                <description>Marginal value functions elicited from the model. The returned value is an XMCDA document whose main tag is criteria. It contains a description of characteristic points on all considered criteria.</description>
+            </documentation>
+            <xmcda tag="criteria">
+                <![CDATA[
+                    <criteria>
+                        <criterion id="%1">
+                            <criterionFunction>
+                                <points>
+                                    <point>
+                                        <abscissa><real>[...]</real></abscissa>
+                                        <ordinate><real>[...]</real></ordinate>
+                                    </point>
+                                    [...]
+                                </points>
+                            </criterionFunction>
+                        </criterion>
+                        [...]
+                    </criteria>
+                    ]]>
+            </xmcda>
+        </output>
+
+		<output id="messages" name="messages" displayName="messages">
+			<documentation>
+				<description>A list of messages generated by the algorithm.</description>
+			</documentation>
+			<xmcda tag="methodMessages" />
+		</output>
+    </parameters>
+</program_description>
