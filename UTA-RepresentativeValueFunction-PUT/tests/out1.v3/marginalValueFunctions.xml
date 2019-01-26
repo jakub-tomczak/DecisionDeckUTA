@@ -20,7 +20,7 @@
 									<real>7.0</real>
 								</abscissa>
 								<ordinate>
-									<real>0.75</real>
+									<real>0.0</real>
 								</ordinate>
 							</tail>
 						</segment>
@@ -39,7 +39,7 @@
 									<real>0.4</real>
 								</abscissa>
 								<ordinate>
-									<real>0.25</real>
+									<real>1.0</real>
 								</ordinate>
 							</head>
 							<tail open="false">

@@ -5,14 +5,24 @@
             <alternativeID>a1</alternativeID>
             <column>
                 <alternativeID>a2</alternativeID>
+                <values>
+					<value>
+						<boolean>true</boolean>
+					</value>
+				</values>
             </column>
         </row>
     </alternativesMatrix>
-        <alternativesMatrix id="weak">
+    <alternativesMatrix id="weak">
         <row>
             <alternativeID>a3</alternativeID>
             <column>
                 <alternativeID>a1</alternativeID>
+                <values>
+					<value>
+						<boolean>true</boolean>
+					</value>
+				</values>
             </column>
         </row>
     </alternativesMatrix>

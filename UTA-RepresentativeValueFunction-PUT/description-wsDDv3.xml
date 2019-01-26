@@ -101,23 +101,23 @@
 			<documentation>
 				<description>Pariwise comparison relations between alternatives. Alternatives are referred by their IDs. Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. Available types of comparisons are: 'strong', 'weak', 'indifference'.</description>
 			</documentation>
-			<xmcda tag="alternativesComparisons">
+			<xmcda tag="alternativesMatrix">
                 <![CDATA[
-                    <alternativesComparisons>
-                        <comparisonType>
+                    <alternativesMatrix id="%1">
+                        <row>
+                            <alternativeID>%2</alternativeID>
+                            <column>
+                                <alternativeID>%3</alternativeID>
+                                <values>
+                                    <value>
+                                        <boolean>true</boolean>
+                                    </value>
+                                </values>
+                            </column>
                             [...]
-                        </comparsionType>
-                        <pairs>
-                            <pair>
-                                <initial>
-                                    <alternativeID>[...]</alternativeID>
-                                </initial>
-                                <terminal>
-                                    <alternativeID>[...]</alternativeID>
-                                </terminal>
-                            </pair>
-                        </pairs>
-                    </alternativesComparisons>
+                        </row>
+                        [...]
+                    </alternativesMatrix>
                 ]]>
             </xmcda>
 		</input>

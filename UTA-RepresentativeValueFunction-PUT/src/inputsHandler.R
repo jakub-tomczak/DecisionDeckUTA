@@ -48,8 +48,10 @@ processPreferences <- function(preferencesMatrix, alternatives) {
   #filter out NULL values, return value is a vector
   relationsVec <- Filter(Negate(is.null), relationsMatrix)
   #create two column matrix with pairs in rows
-  relationsVec <- matrix(unlist(relationsVec), ncol = 2)
-  
+  if(!is.null(relationsVec) && length(relationsVec) > 0){
+    relationsVec <- matrix(unlist(relationsVec), ncol = 2)
+  }
+  # return an empty list if there were no relations
   list(
     relationName = preferencesMatrix$id(),
     relationPairs = relationsVec
@@ -128,7 +130,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   problem <- buildProblem(performanceTable = performanceMatrix,
                           criteria = criteriaDirections,
                           characteristicPoints = characteristicPoints, 
-                          strongPreference = preferencesList$strong,
+                          strongPreferences = preferencesList$strong,
                           weakPreferences = preferencesList$weak,
                           indifferenceRelations = preferencesList$indifference)
   

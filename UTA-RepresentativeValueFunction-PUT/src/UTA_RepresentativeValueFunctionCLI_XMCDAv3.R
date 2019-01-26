@@ -67,7 +67,7 @@ loadXMCDAv3(xmcdaData, inDirectory, characteristicPointsFile, mandatory = FALSE,
 loadXMCDAv3(xmcdaData, inDirectory, criteriaPreferenceDirectionsFile, mandatory = TRUE, xmcdaMessages, "criteriaScales")
 loadXMCDAv3(xmcdaData, inDirectory, alternativesFile, mandatory = TRUE, xmcdaMessages, "alternatives")
 loadXMCDAv3(xmcdaData, inDirectory, performanceTableFile, mandatory = TRUE, xmcdaMessages, "performanceTable")
-loadXMCDAv3(xmcdaData, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages, "alternativesComparisons")
+loadXMCDAv3(xmcdaData, inDirectory, alternativesComparisonsFile, mandatory = FALSE, xmcdaMessages, "alternativesMatrix")
 loadXMCDAv3(xmcdaData, inDirectory, methodParametersFile, mandatory = FALSE, xmcdaMessages, "methodParameters")
 
 # if we have problem with the inputs, it is time to stop
