@@ -1,7 +1,7 @@
 #********************helpers.R********************
 
 getAvailableMethods <- function(){
-  list(utag = "uta-g", utamp1 = "utamp-1", utamp2 = "utamp-2", roruta = "roruta")
+  list(utag = "uta-g", utamp1 = "utamp1-g", utamp2 = "utamp2-g", roruta = "roruta")
 }
 
 assert <- function(expression, message)
@@ -28,7 +28,7 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
   includeRho <- FALSE
   # used in strong preference constraint
   includeK <- FALSE
-  includeEpsilon <- TRUE
+  includeEpsilon <- FALSE
 
   rhoEpsilon <- 0
   epsilonEpsilon <- 0
@@ -51,7 +51,6 @@ buildModel <- function(problem, method, minK = 1e-4, minEpsilon = 1e-4, bigNumbe
   kIndex <- NULL
   epsilonIndex <- NULL
 
-  assert(xor(includeK, includeEpsilon), "K and epsilon should not be acitve simultaneously")
   if(includeRho)
     rhoIndex <- numberOfVariables-1
   if(includeK){
@@ -396,7 +395,7 @@ createRankRelatedConstraints <- function(problem, model, minEpsilon, bigNumber=1
       startIndex <- (i - 1)*2*nrAlternatives + ifelse(type=="lower", 1, 2)
       indicesForSum <- seq(startIndex, startIndex + 2*nrAlternatives - 1, 2)
       # remove current alternative from being added to the sum
-      indicesForSum <- indicesForSum[-i]
+      indicesForSum <- indicesForSum[-alternative]
       binaryVariables[indicesForSum] <- 1
       LHS <- c(rep(0, currentLHSColumnsNumber), binaryVariables)
       desiredRankConstraintsLHS <- rbind(desiredRankConstraintsLHS, LHS)
@@ -1070,10 +1069,10 @@ solveProblem <- function(model, allowInconsistency = FALSE)
     utag(model, allowInconsistency)
   } else if(model$methodName == availableMethods$utamp1)
   {
-    utamp1(model, allowInconsistency)
+    utamp1g(model, allowInconsistency)
   } else if(model$methodName == availableMethods$utamp2)
   {
-    utamp2(model, allowInconsistency)
+    utamp2g(model, allowInconsistency)
   } else if(model$methodName == availableMethods$roruta){
     roruta(model, allowInconsistency)
   } else {
@@ -1137,9 +1136,9 @@ utag <- function(model, allowInconsistency = FALSE)
   methodResult
 }
 
-#UTAMP-1
+#UTAMP1-G
 #' @export
-utamp1 <- function(model, allowInconsistency = FALSE) {
+utamp1g <- function(model, allowInconsistency = FALSE) {
   assert(!is.null(model$kIndex),
          "k must be a variable in the model. Try building model again with a command `buildModel(problem, 'utamp-1')`.")
 
@@ -1156,9 +1155,9 @@ utamp1 <- function(model, allowInconsistency = FALSE) {
   NULL
 }
 
-#UTAMP-2
+#UTAMP2-G
 #' @export
-utamp2 <- function(model, allowInconsistency = FALSE) {
+utamp2g <- function(model, allowInconsistency = FALSE) {
   assert(!is.null(model$kIndex) && !is.null(model$rhoIndex),
          "k or rho must be a variable in the model. Try building model again with a command `buildModel(problem, 'utamp-2')`.")
 
@@ -1324,6 +1323,10 @@ necessaryAndPossiblePreferencesRelationAnalysis <- function(model){
 
     }
   }
+  rownames(necessaryWeakRelations) <- rownames(model$performances)
+  colnames(necessaryWeakRelations) <- rownames(model$performances)
+  rownames(possibleWeakRelations) <- rownames(model$performances)
+  colnames(possibleWeakRelations) <- rownames(model$performances)
   list(
     necessaryWeakRelations = necessaryWeakRelations,
     possibleWeakRelations = possibleWeakRelations
@@ -1336,7 +1339,7 @@ extremeRankingAnalysis <- function(model){
          "Extreme ranking analysis is only available in roruta model.")
   nrAlternatives <- nrow(model$preferencesToModelVariables)
   rankPositions <- matrix(nrow=nrAlternatives, ncol=2)
-  colnames(rankPositions) <- c("min position", "max position")
+  colnames(rankPositions) <- c("The worst rank", "The best rank")
 
   objective <- createObjective(model$constraints$lhs, model$epsilonIndex)
   # check whether base model may be solved
@@ -1352,6 +1355,8 @@ extremeRankingAnalysis <- function(model){
 
     rankPositions[i, ] <- c(minPosition, maxPosition)
   }
+
+  rownames(rankPositions) <- rownames(model$performances)
   rankPositions
 }
 
