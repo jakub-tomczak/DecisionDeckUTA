@@ -199,7 +199,7 @@ checkAndExtractInputs <- function(xmcdaData, programExecutionResult) {
   #parse methodParameters.xml
   method <- ifelse(is.null(programParameters$methodSettings$methodName), 
                    "uta-g",
-                   programParameters$methodSettings$methodName)
+                   programParameters$methodSettings$methodName[[1]])
 
   #validate data and build problem
   problem <- buildProblem(performanceTable = performanceMatrix,
