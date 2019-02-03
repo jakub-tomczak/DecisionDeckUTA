@@ -1,25 +1,7 @@
 <?xml version="1.0" ?>
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2018/XMCDA-3.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2018/XMCDA-3.1.0 http://www.decision-deck.org/xmcda/_downloads/XMCDA-3.1.0.xsd">
 <performanceTable>
-	<alternativePerformances>
-		<alternativeID>a1</alternativeID>
-		<performance>
-			<criterionID>g1</criterionID>
-			<values>
-				<value>
-					<real>5</real>
-				</value>
-			</values>
-		</performance>
-		<performance>
-			<criterionID>g2</criterionID>
-			<values>
-				<value>
-					<real>.5</real>
-				</value>
-			</values>
-		</performance>
-	</alternativePerformances>
+
 	
 	<alternativePerformances>
 		<alternativeID>a2</alternativeID>
@@ -40,23 +22,43 @@
 				</values>
 		</performance>
 	</alternativePerformances>
+
+		<alternativePerformances>
+		<alternativeID>a1</alternativeID>
+		<performance>
+			<criterionID>g1</criterionID>
+			<values>
+				<value>
+					<real>5</real>
+				</value>
+			</values>
+		</performance>
+		<performance>
+			<criterionID>g2</criterionID>
+			<values>
+				<value>
+					<real>.5</real>
+				</value>
+			</values>
+		</performance>
+	</alternativePerformances>
 	
 	<alternativePerformances>
 		<alternativeID>a3</alternativeID>
 		<performance>
 			<criterionID>g1</criterionID>
 			<values>
-							<value>
-				<real>3</real>
-			</value>
+				<value>
+					<real>3</real>
+				</value>
 			</values>
 		</performance>
 		<performance>
 			<criterionID>g2</criterionID>
 				<values>
-								<value>
-					<real>.5</real>
-				</value>
+					<value>
+						<real>.5</real>
+					</value>
 				</values>
 		</performance>
 	</alternativePerformances>
@@ -66,17 +68,17 @@
 		<performance>
 			<criterionID>g1</criterionID>
 				<values>
-							<value>
-				<real>7</real>
-			</value>
+					<value>
+						<real>7</real>
+					</value>
 				</values>
 		</performance>
 		<performance>
 			<criterionID>g2</criterionID>
 				<values>
-								<value>
-					<real>.4</real>
-				</value>
+					<value>
+						<real>.4</real>
+					</value>
 				</values>
 		</performance>
 	</alternativePerformances>

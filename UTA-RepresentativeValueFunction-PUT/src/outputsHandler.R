@@ -50,8 +50,13 @@ convertAlternatives <- function(alternativesMatrix){
 convertUtilityValueInAlternatives <- function(alternatives){
   xmcda <- .jnew("org/xmcda/XMCDA")
   javaAlternativesValues <-.jnew("org/xmcda/AlternativesValues")
+  names <- rownames(alternatives)
   for (i in 1:nrow(alternatives)){
-    javaAlternativesValues$put(.jnew("org/xmcda/Alternative",paste("a", i, sep="")),.jnew("java/lang/Double",as.numeric(alternatives[[i, 2]])))
+    # set alternatives ids and names as names from performance table
+    newAlternative <- .jnew("org/xmcda/Alternative",names[i])
+    newAlternative$setName(names[i])
+    value <- .jnew("java/lang/Double",as.numeric(alternatives[[i, 2]]))
+    javaAlternativesValues$put(newAlternative, value)
   }
   xmcda$alternativesValuesList$add(javaAlternativesValues)
   xmcda
@@ -126,12 +131,8 @@ convertValueFunctions <- function(results){
   xmcda
 }
 
-convert <- function(results, programExecutionResult) {
-
-  # converts the outputs of the computation to XMCDA objects
-
-  # translate the results into XMCDA v3
-  # if an error occurs, return null, else a dictionnary "xmcdaTag -> xmcdaObject"
+convert <- function(results, programExecutionResult) 
+{
   alternatives <- convertUtilityValueInAlternatives(results$ranking)
   functions <- convertValueFunctions(results)
   

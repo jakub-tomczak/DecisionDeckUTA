@@ -2,15 +2,7 @@
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2018/XMCDA-3.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2018/XMCDA-3.1.0 http://www.decision-deck.org/xmcda/_downloads/XMCDA-3.1.0.xsd">
 	<alternativesValues>
 		<alternativeValue>
-			<alternativeID>a1</alternativeID>
-			<values>
-				<value>
-					<real>0.875</real>
-				</value>
-			</values>
-		</alternativeValue>
-		<alternativeValue>
-			<alternativeID>a2</alternativeID>
+			<alternativeID>Nissan Sunny</alternativeID>
 			<values>
 				<value>
 					<real>0.0</real>
@@ -18,7 +10,7 @@
 			</values>
 		</alternativeValue>
 		<alternativeValue>
-			<alternativeID>a3</alternativeID>
+			<alternativeID>Opel Astra</alternativeID>
 			<values>
 				<value>
 					<real>0.875</real>
@@ -26,7 +18,15 @@
 			</values>
 		</alternativeValue>
 		<alternativeValue>
-			<alternativeID>a4</alternativeID>
+			<alternativeID>Honda Civic</alternativeID>
+			<values>
+				<value>
+					<real>0.875</real>
+				</value>
+			</values>
+		</alternativeValue>
+		<alternativeValue>
+			<alternativeID>Renault R19</alternativeID>
 			<values>
 				<value>
 					<real>1.0</real>

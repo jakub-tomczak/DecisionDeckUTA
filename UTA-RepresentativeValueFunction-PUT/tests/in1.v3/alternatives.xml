@@ -1,26 +1,10 @@
 <?xml version="1.0" ?>
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2018/XMCDA-3.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.decision-deck.org/2018/XMCDA-3.1.0 http://www.decision-deck.org/xmcda/_downloads/XMCDA-3.1.0.xsd">
     <alternatives>
-        <alternative id="a1" name="Astra">
-            <description>
-                <comment>Opel Astra</comment>
-            </description>
-        </alternative>
-        <alternative id="a2" name="Sunny">
-            <description>
-                <comment>Nissan Sunny</comment>
-            </description>
-        </alternative>
-        <alternative id="a3" name="Civic">
-            <description>
-                <comment>Honda Civic</comment>
-            </description>
-        </alternative>
-        <alternative id="a4" name="R19">
-            <description>
-                <comment>Renault 19</comment>
-            </description>
-        </alternative>
+        <alternative id="a1" name="Opel Astra"/>
+        <alternative id="a2" name="Nissan Sunny"/>
+        <alternative id="a3" name="Honda Civic" />
+        <alternative id="a4" name="Renault R19" />
     </alternatives>
 </xmcda:XMCDA>
 

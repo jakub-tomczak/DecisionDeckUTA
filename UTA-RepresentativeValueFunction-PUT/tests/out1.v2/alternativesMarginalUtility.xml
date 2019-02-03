@@ -2,25 +2,25 @@
 <xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
     <alternativesValues>
         <alternativeValue>
-            <alternativeID>a1</alternativeID>
+            <alternativeID>Astra</alternativeID>
             <value>
-                <real>0.66875</real>
+                <real>0.875</real>
             </value>
         </alternativeValue>
         <alternativeValue>
-            <alternativeID>a2</alternativeID>
+            <alternativeID>Sunny</alternativeID>
             <value>
                 <real>0.0</real>
             </value>
         </alternativeValue>
         <alternativeValue>
-            <alternativeID>a3</alternativeID>
+            <alternativeID>Civic</alternativeID>
             <value>
-                <real>0.36874999999999997</real>
+                <real>0.875</real>
             </value>
         </alternativeValue>
         <alternativeValue>
-            <alternativeID>a4</alternativeID>
+            <alternativeID>R19</alternativeID>
             <value>
                 <real>1.0</real>
             </value>
