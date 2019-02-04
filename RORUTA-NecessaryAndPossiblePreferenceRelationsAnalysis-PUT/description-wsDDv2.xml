@@ -1,0 +1,214 @@
+<?xml version='1.0' encoding='utf-8'?>
+<program_description>
+    <program provider="PUT" name="RORUTA_NecessaryAndPossiblePreferenceRelationsAnalysis" displayName="RORUTA_NecessaryAndPossiblePreferenceRelationsAnalysis" version="1.0" />
+    <documentation>
+        <description>This module is to analyse necessary and possible preference relations of alternatives using RORUTA model.</description>
+        <contact><![CDATA[Jakub Tomczak (jakub.tomczak@live.com)]]></contact>
+        <url>https://github.com/jakub-tomczak/DecisionDeckUTA</url>
+        <reference>Corrente2013</reference>
+    </documentation>
+    <parameters>
+		<input id="criteria" name="criteria" displayName="Description of criteria">
+			<documentation>
+				<description>A list of criteria.</description>
+			</documentation>
+			<xmcda tag="criteria">
+                <![CDATA[	
+                    <criteria>
+                        <criterion id="[...]" name="[...]">
+                            <scale>
+                                <quantitative>
+                                    <preferenceDirection>[...]</preferenceDirection>
+                                </quantitative>
+                            </scale>
+                        </criterion>
+                    </criteria>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="characteristicPoints" name="characteristicPoints" displayName="Nuber of characteristic points" isoptional="1">
+			<documentation>
+				<description>Options of the criteria. Indicates the number of characteristic points on criteria.</description>
+			</documentation>
+			<xmcda tag="criteriaValues">
+                <![CDATA[	
+                    <criteriaValues>
+                        <criterionValue>
+                            <criterionID>[...]</criterionID>
+                            <value>
+                                <integer>[...]</integer>
+                            </value>
+                        </criterionValue>
+                        [...]
+                    </criteriaValues>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="alternatives" name="alternatives" displayName="Alternative list">
+			<documentation>
+				<description>A list of alternatives. </description>
+			</documentation>
+			<xmcda tag="alternatives">
+                <![CDATA[	
+                    <alternatives>
+                        <alternative id="[...]" name="[...]"/>
+                    </alternatives>
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="performanceTable" name="performanceTable" displayName="performanceTable">
+			<documentation>
+				<description>Values of criteria for different alternatives. Values of alternatives should be non-negative real numbers.</description>
+            </documentation>
+			<xmcda tag="performanceTable">
+                <![CDATA[
+                    <performanceTable>
+                        <alternativePerformances>
+                            <alternativeID>[...]</alternativeID>
+                            <performance>
+                                <criterionID>[...]</criterionID>
+                                <value>
+                                        <real>[...]</real>
+                                </value>
+                            </performance>
+                        </alternativePerformances>
+                    </performanceTable>       
+                ]]>
+            </xmcda>
+		</input>
+
+		<input id="alternativesComparisons" name="alternativesComparisons" displayName="Pariwise comparisons between alternatives" isoptional="1">
+			<documentation>
+				<description>Pariwise comparison relations between alternatives. Alternatives are referred by their IDs. Type of the comparison is spcified in 'id' attribute in the 'alternativesComparisons' tag. Available types of comparisons are: 'strong', 'weak', 'indifference'.</description>
+			</documentation>
+			<xmcda tag="alternativesComparisons">
+                <![CDATA[
+                    <alternativesComparisons>
+                        <comparisonType>
+                            [...]
+                        </comparsionType>
+                        <pairs>
+                            <pair>
+                                <initial>
+                                    <alternativeID>[...]</alternativeID>
+                                </initial>
+                                <terminal>
+                                    <alternativeID>[...]</alternativeID>
+                                </terminal>
+                            </pair>
+                        </pairs>
+                    </alternativesComparisons>
+                ]]>
+            </xmcda>
+		</input>
+
+        <input id="intensityOfPreferences" name="intensityOfPreferences" displayName="Intensity of preferences" isoptional="1">
+            <documentation>
+                <description>Set of comparisons of intensity of preference.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons>
+                    <comparisonType>
+                        [...]
+                    </comparisonType>
+                    <pairs>
+                        <pair>
+                            <initial>
+                                <alternativesSet>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                </alternativesSet>  
+                            </initial>
+                            <terminal>
+                                <alternativesSet>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                    <element>
+                                        <alternativeID>[...]</alternativeID>
+                                    </element>
+                                </alternativesSet>
+                            </terminal>
+                        </pair>
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
+        </input>
+
+        <input id="rankRelatedRequirements" name="rankRelatedRequirements" displayName="Rank related requirements" isoptional="1">
+            <documentation>
+                <description>Set of rank-related requirements. In other words it is a set of ranges of possible positions in the final ranking for a chosen alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesValues"><![CDATA[
+                <alternativesValues>
+                    <alternativeValue>
+                        <alternativeID>%1</alternativeID>
+                        <value>
+                            <interval>
+                                <lowerBound><integer>%2</integer></lowerBound>
+                                <upperBound><integer>%3</integer></upperBound>
+                            </interval>
+                        </value>
+                    </alternativeValue>
+                    [...]
+                </alternativesValues>
+            ]]></xmcda>
+        </input>
+
+        <output id="necessaryRelations" name="necessaryRelations" displayName="Necessary relations from roruta method" >
+            <documentation>
+                <description>A list of all necessary weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons mcdaConcept="necessaryRelations" id="%1">
+                    <pairs>
+                        <pair>
+                        <initial>
+                            <alternativeID>%2</alternativeID>
+                        </initial>
+                        <terminal>
+                            <alternativeID>%3</alternativeID>
+                        </terminal>
+                        </pair>
+                        [...]
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
+        </output>
+
+        <output id="possibleRelations" name="possibleRelations" displayName="Possible relations from roruta method">
+            <documentation>
+                <description>A list of all possible weak preference relations in the set of alternatives.</description>
+            </documentation>
+            <xmcda tag="alternativesComparisons"><![CDATA[
+                <alternativesComparisons mcdaConcept="possibleRelations" id=%1>
+                    <pairs>
+                        <pair>
+                        <initial>
+                            <alternativeID>%1</alternativeID>
+                        </initial>
+                        <terminal>
+                            <alternativeID>%2</alternativeID>
+                        </terminal>
+                        </pair>
+                        [...]
+                    </pairs>
+                </alternativesComparisons>
+            ]]></xmcda>
+        </output>
+
+		<output id="messages" name="messages" displayName="messages">
+			<documentation>
+				<description>A list of messages generated by the algorithm.</description>
+			</documentation>
+			<xmcda tag="methodMessages" />
+		</output>
+    </parameters>
+</program_description>

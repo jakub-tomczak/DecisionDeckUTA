@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+        <alternativesComparisons id="strong">
+        <pairs>
+            <pair>
+                <initial>
+                    <alternativesSet>
+                        <element>
+                            <alternativeID>a1</alternativeID>
+                        </element>
+                        <element>
+                            <alternativeID>a3</alternativeID>
+                        </element>
+                    </alternativesSet>
+                </initial>
+                <terminal>
+                    <alternativesSet>
+                        <element>
+                            <alternativeID>a3</alternativeID>
+                        </element>
+                        <element>
+                            <alternativeID>a4</alternativeID>
+                        </element>
+                    </alternativesSet>
+                </terminal>
+            </pair>
+        </pairs>
+    </alternativesComparisons>
+    <alternativesComparisons id="weak">
+        <pairs>
+            <pair>
+                <initial>
+                    <alternativesSet>
+                        <element>
+                            <alternativeID>a2</alternativeID>
+                        </element>
+                        <element>
+                            <alternativeID>a3</alternativeID>
+                        </element>
+                    </alternativesSet>
+                </initial>
+                <terminal>
+                    <alternativesSet>
+                        <element>
+                            <alternativeID>a1</alternativeID>
+                        </element>
+                        <element>
+                            <alternativeID>a4</alternativeID>
+                        </element>
+                    </alternativesSet>
+                </terminal>
+            </pair>
+        </pairs>
+    </alternativesComparisons>
+</xmcda:XMCDA>
