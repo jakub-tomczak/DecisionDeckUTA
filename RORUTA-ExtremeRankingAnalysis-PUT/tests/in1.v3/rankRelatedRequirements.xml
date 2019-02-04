@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+    <alternativesValues>
+        <alternativeValue>
+            <alternativeID>a1</alternativeID>
+            <value>
+                <interval>
+                    <lowerBound><integer>5</integer></lowerBound>
+                    <upperBound><integer>3</integer></upperBound>
+                </interval>
+            </value>
+        </alternativeValue>
+    </alternativesValues>
+</xmcda:XMCDA>

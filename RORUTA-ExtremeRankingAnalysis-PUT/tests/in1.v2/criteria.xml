@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xmcda:XMCDA xmlns:xmcda="http://www.decision-deck.org/2017/XMCDA-2.2.2" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-Instance">
+<criteria>
+	<criterion id="g1" name="acceleration">
+		<scale>
+			<quantitative>
+				<preferenceDirection>max</preferenceDirection>
+			</quantitative>
+		</scale>
+	</criterion>
+	<criterion id="g2" name="cost">
+		<scale>
+			<quantitative>
+				<preferenceDirection>min</preferenceDirection>
+			</quantitative>
+		</scale>
+	</criterion>
+</criteria>
+</xmcda:XMCDA>
